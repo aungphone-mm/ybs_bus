@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1200" height="700" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="barGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#667eea;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#764ba2;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="700" fill="#f8f9fa"/>
+
+  <!-- Title -->
+  <text x="600" y="40" font-family="Arial, sans-serif" font-size="24" font-weight="bold" text-anchor="middle" fill="#333">Route Length Distribution (Number of Stops)</text>
+
+  <!-- Chart area -->
+  <g transform="translate(250, 80)">
+    <rect x="0" y="0" width="105.88235294117646" height="47.77777777777778" fill="url(#barGradient)" opacity="0.8"/>
+
+    <!-- Label -->
+    <text x="-10" y="23.88888888888889" font-family="Arial, sans-serif" font-size="14" text-anchor="end" alignment-baseline="middle" fill="#333">0-25 stops</text>
+
+    <!-- Value -->
+    <text x="115.88235294117646" y="23.88888888888889" font-family="Arial, sans-serif" font-size="14" font-weight="bold" alignment-baseline="middle" fill="#667eea">4</text>
+    <rect x="0" y="57.77777777777778" width="105.88235294117646" height="47.77777777777778" fill="url(#barGradient)" opacity="0.8"/>
+
+    <!-- Label -->
+    <text x="-10" y="81.66666666666667" font-family="Arial, sans-serif" font-size="14" text-anchor="end" alignment-baseline="middle" fill="#333">25-50 stops</text>
+
+    <!-- Value -->
+    <text x="115.88235294117646" y="81.66666666666667" font-family="Arial, sans-serif" font-size="14" font-weight="bold" alignment-baseline="middle" fill="#667eea">4</text>
+    <rect x="0" y="115.55555555555556" width="502.94117647058823" height="47.77777777777778" fill="url(#barGradient)" opacity="0.8"/>
+
+    <!-- Label -->
+    <text x="-10" y="139.44444444444446" font-family="Arial, sans-serif" font-size="14" text-anchor="end" alignment-baseline="middle" fill="#333">50-75 stops</text>
+
+    <!-- Value -->
+    <text x="512.9411764705883" y="139.44444444444446" font-family="Arial, sans-serif" font-size="14" font-weight="bold" alignment-baseline="middle" fill="#667eea">19</text>
+    <rect x="0" y="173.33333333333334" width="900" height="47.77777777777778" fill="url(#barGradient)" opacity="0.8"/>
+
+    <!-- Label -->
+    <text x="-10" y="197.22222222222223" font-family="Arial, sans-serif" font-size="14" text-anchor="end" alignment-baseline="middle" fill="#333">75-100 stops</text>
+
+    <!-- Value -->
+    <text x="910" y="197.22222222222223" font-family="Arial, sans-serif" font-size="14" font-weight="bold" alignment-baseline="middle" fill="#667eea">34</text>
+    <rect x="0" y="231.11111111111111" width="820.5882352941177" height="47.77777777777778" fill="url(#barGradient)" opacity="0.8"/>
+
+    <!-- Label -->
+    <text x="-10" y="255" font-family="Arial, sans-serif" font-size="14" text-anchor="end" alignment-baseline="middle" fill="#333">100-125 stops</text>
+
+    <!-- Value -->
+    <text x="830.5882352941177" y="255" font-family="Arial, sans-serif" font-size="14" font-weight="bold" alignment-baseline="middle" fill="#667eea">31</text>
+    <rect x="0" y="288.8888888888889" width="344.1176470588235" height="47.77777777777778" fill="url(#barGradient)" opacity="0.8"/>
+
+    <!-- Label -->
+    <text x="-10" y="312.7777777777778" font-family="Arial, sans-serif" font-size="14" text-anchor="end" alignment-baseline="middle" fill="#333">125-150 stops</text>
+
+    <!-- Value -->
+    <text x="354.1176470588235" y="312.7777777777778" font-family="Arial, sans-serif" font-size="14" font-weight="bold" alignment-baseline="middle" fill="#667eea">13</text>
+    <rect x="0" y="346.6666666666667" width="158.82352941176472" height="47.77777777777778" fill="url(#barGradient)" opacity="0.8"/>
+
+    <!-- Label -->
+    <text x="-10" y="370.5555555555556" font-family="Arial, sans-serif" font-size="14" text-anchor="end" alignment-baseline="middle" fill="#333">150-175 stops</text>
+
+    <!-- Value -->
+    <text x="168.82352941176472" y="370.5555555555556" font-family="Arial, sans-serif" font-size="14" font-weight="bold" alignment-baseline="middle" fill="#667eea">6</text>
+    <rect x="0" y="404.44444444444446" width="52.94117647058823" height="47.77777777777778" fill="url(#barGradient)" opacity="0.8"/>
+
+    <!-- Label -->
+    <text x="-10" y="428.33333333333337" font-family="Arial, sans-serif" font-size="14" text-anchor="end" alignment-baseline="middle" fill="#333">175-200 stops</text>
+
+    <!-- Value -->
+    <text x="62.94117647058823" y="428.33333333333337" font-family="Arial, sans-serif" font-size="14" font-weight="bold" alignment-baseline="middle" fill="#667eea">2</text>
+    <rect x="0" y="462.22222222222223" width="132.35294117647058" height="47.77777777777778" fill="url(#barGradient)" opacity="0.8"/>
+
+    <!-- Label -->
+    <text x="-10" y="486.11111111111114" font-family="Arial, sans-serif" font-size="14" text-anchor="end" alignment-baseline="middle" fill="#333">200+ stops</text>
+
+    <!-- Value -->
+    <text x="142.35294117647058" y="486.11111111111114" font-family="Arial, sans-serif" font-size="14" font-weight="bold" alignment-baseline="middle" fill="#667eea">5</text>
+  </g>
+</svg>

@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1200" height="800" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="barGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#667eea;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#764ba2;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="800" fill="#f8f9fa"/>
+
+  <!-- Title -->
+  <text x="600" y="40" font-family="Arial, sans-serif" font-size="24" font-weight="bold" text-anchor="middle" fill="#333">Top 20 Townships by Stop Count</text>
+
+  <!-- Chart area -->
+  <g transform="translate(250, 80)">
+    <rect x="0" y="0" width="900" height="21" fill="url(#barGradient)" opacity="0.8"/>
+
+    <!-- Label -->
+    <text x="-10" y="10.5" font-family="Arial, sans-serif" font-size="14" text-anchor="end" alignment-baseline="middle" fill="#333">Thanlyin</text>
+
+    <!-- Value -->
+    <text x="910" y="10.5" font-family="Arial, sans-serif" font-size="14" font-weight="bold" alignment-baseline="middle" fill="#667eea">170</text>
+    <rect x="0" y="31" width="741.1764705882352" height="21" fill="url(#barGradient)" opacity="0.8"/>
+
+    <!-- Label -->
+    <text x="-10" y="41.5" font-family="Arial, sans-serif" font-size="14" text-anchor="end" alignment-baseline="middle" fill="#333">North Dagon</text>
+
+    <!-- Value -->
+    <text x="751.1764705882352" y="41.5" font-family="Arial, sans-serif" font-size="14" font-weight="bold" alignment-baseline="middle" fill="#667eea">140</text>
+    <rect x="0" y="62" width="709.4117647058823" height="21" fill="url(#barGradient)" opacity="0.8"/>
+
+    <!-- Label -->
+    <text x="-10" y="72.5" font-family="Arial, sans-serif" font-size="14" text-anchor="end" alignment-baseline="middle" fill="#333">Mingalardon</text>
+
+    <!-- Value -->
+    <text x="719.4117647058823" y="72.5" font-family="Arial, sans-serif" font-size="14" font-weight="bold" alignment-baseline="middle" fill="#667eea">134</text>
+    <rect x="0" y="93" width="672.3529411764706" height="21" fill="url(#barGradient)" opacity="0.8"/>
+
+    <!-- Label -->
+    <text x="-10" y="103.5" font-family="Arial, sans-serif" font-size="14" text-anchor="end" alignment-baseline="middle" fill="#333">South Dagon</text>
+
+    <!-- Value -->
+    <text x="682.3529411764706" y="103.5" font-family="Arial, sans-serif" font-size="14" font-weight="bold" alignment-baseline="middle" fill="#667eea">127</text>
+    <rect x="0" y="124" width="645.8823529411765" height="21" fill="url(#barGradient)" opacity="0.8"/>
+
+    <!-- Label -->
+    <text x="-10" y="134.5" font-family="Arial, sans-serif" font-size="14" text-anchor="end" alignment-baseline="middle" fill="#333">Thaketa</text>
+
+    <!-- Value -->
+    <text x="655.8823529411765" y="134.5" font-family="Arial, sans-serif" font-size="14" font-weight="bold" alignment-baseline="middle" fill="#667eea">122</text>
+    <rect x="0" y="155" width="635.2941176470589" height="21" fill="url(#barGradient)" opacity="0.8"/>
+
+    <!-- Label -->
+    <text x="-10" y="165.5" font-family="Arial, sans-serif" font-size="14" text-anchor="end" alignment-baseline="middle" fill="#333">Shwe Pyithar</text>
+
+    <!-- Value -->
+    <text x="645.2941176470589" y="165.5" font-family="Arial, sans-serif" font-size="14" font-weight="bold" alignment-baseline="middle" fill="#667eea">120</text>
+    <rect x="0" y="186" width="619.4117647058823" height="21" fill="url(#barGradient)" opacity="0.8"/>
+
+    <!-- Label -->
+    <text x="-10" y="196.5" font-family="Arial, sans-serif" font-size="14" text-anchor="end" alignment-baseline="middle" fill="#333">Insein</text>
+
+    <!-- Value -->
+    <text x="629.4117647058823" y="196.5" font-family="Arial, sans-serif" font-size="14" font-weight="bold" alignment-baseline="middle" fill="#667eea">117</text>
+    <rect x="0" y="217" width="582.3529411764706" height="21" fill="url(#barGradient)" opacity="0.8"/>
+
+    <!-- Label -->
+    <text x="-10" y="227.5" font-family="Arial, sans-serif" font-size="14" text-anchor="end" alignment-baseline="middle" fill="#333">North Okkalapa</text>
+
+    <!-- Value -->
+    <text x="592.3529411764706" y="227.5" font-family="Arial, sans-serif" font-size="14" font-weight="bold" alignment-baseline="middle" fill="#667eea">110</text>
+    <rect x="0" y="248" width="492.35294117647067" height="21" fill="url(#barGradient)" opacity="0.8"/>
+
+    <!-- Label -->
+    <text x="-10" y="258.5" font-family="Arial, sans-serif" font-size="14" text-anchor="end" alignment-baseline="middle" fill="#333">Thingangyun</text>
+
+    <!-- Value -->
+    <text x="502.35294117647067" y="258.5" font-family="Arial, sans-serif" font-size="14" font-weight="bold" alignment-baseline="middle" fill="#667eea">93</text>
+    <rect x="0" y="279" width="476.47058823529414" height="21" fill="url(#barGradient)" opacity="0.8"/>
+
+    <!-- Label -->
+    <text x="-10" y="289.5" font-family="Arial, sans-serif" font-size="14" text-anchor="end" alignment-baseline="middle" fill="#333">Hlaing Tharyar</text>
+
+    <!-- Value -->
+    <text x="486.47058823529414" y="289.5" font-family="Arial, sans-serif" font-size="14" font-weight="bold" alignment-baseline="middle" fill="#667eea">90</text>
+    <rect x="0" y="310" width="375.88235294117646" height="21" fill="url(#barGradient)" opacity="0.8"/>
+
+    <!-- Label -->
+    <text x="-10" y="320.5" font-family="Arial, sans-serif" font-size="14" text-anchor="end" alignment-baseline="middle" fill="#333">Mayangone</text>
+
+    <!-- Value -->
+    <text x="385.88235294117646" y="320.5" font-family="Arial, sans-serif" font-size="14" font-weight="bold" alignment-baseline="middle" fill="#667eea">71</text>
+    <rect x="0" y="341" width="370.5882352941176" height="21" fill="url(#barGradient)" opacity="0.8"/>
+
+    <!-- Label -->
+    <text x="-10" y="351.5" font-family="Arial, sans-serif" font-size="14" text-anchor="end" alignment-baseline="middle" fill="#333">Hmaw Bi</text>
+
+    <!-- Value -->
+    <text x="380.5882352941176" y="351.5" font-family="Arial, sans-serif" font-size="14" font-weight="bold" alignment-baseline="middle" fill="#667eea">70</text>
+    <rect x="0" y="372" width="360" height="21" fill="url(#barGradient)" opacity="0.8"/>
+
+    <!-- Label -->
+    <text x="-10" y="382.5" font-family="Arial, sans-serif" font-size="14" text-anchor="end" alignment-baseline="middle" fill="#333">Hlegu</text>
+
+    <!-- Value -->
+    <text x="370" y="382.5" font-family="Arial, sans-serif" font-size="14" font-weight="bold" alignment-baseline="middle" fill="#667eea">68</text>
+    <rect x="0" y="403" width="338.8235294117647" height="21" fill="url(#barGradient)" opacity="0.8"/>
+
+    <!-- Label -->
+    <text x="-10" y="413.5" font-family="Arial, sans-serif" font-size="14" text-anchor="end" alignment-baseline="middle" fill="#333">South Okkalapa</text>
+
+    <!-- Value -->
+    <text x="348.8235294117647" y="413.5" font-family="Arial, sans-serif" font-size="14" font-weight="bold" alignment-baseline="middle" fill="#667eea">64</text>
+    <rect x="0" y="434" width="312.35294117647055" height="21" fill="url(#barGradient)" opacity="0.8"/>
+
+    <!-- Label -->
+    <text x="-10" y="444.5" font-family="Arial, sans-serif" font-size="14" text-anchor="end" alignment-baseline="middle" fill="#333">Bahan</text>
+
+    <!-- Value -->
+    <text x="322.35294117647055" y="444.5" font-family="Arial, sans-serif" font-size="14" font-weight="bold" alignment-baseline="middle" fill="#667eea">59</text>
+    <rect x="0" y="465" width="275.29411764705884" height="21" fill="url(#barGradient)" opacity="0.8"/>
+
+    <!-- Label -->
+    <text x="-10" y="475.5" font-family="Arial, sans-serif" font-size="14" text-anchor="end" alignment-baseline="middle" fill="#333">Htauk Kyant</text>
+
+    <!-- Value -->
+    <text x="285.29411764705884" y="475.5" font-family="Arial, sans-serif" font-size="14" font-weight="bold" alignment-baseline="middle" fill="#667eea">52</text>
+    <rect x="0" y="496" width="232.94117647058826" height="21" fill="url(#barGradient)" opacity="0.8"/>
+
+    <!-- Label -->
+    <text x="-10" y="506.5" font-family="Arial, sans-serif" font-size="14" text-anchor="end" alignment-baseline="middle" fill="#333">Hlaing</text>
+
+    <!-- Value -->
+    <text x="242.94117647058826" y="506.5" font-family="Arial, sans-serif" font-size="14" font-weight="bold" alignment-baseline="middle" fill="#667eea">44</text>
+    <rect x="0" y="527" width="180" height="21" fill="url(#barGradient)" opacity="0.8"/>
+
+    <!-- Label -->
+    <text x="-10" y="537.5" font-family="Arial, sans-serif" font-size="14" text-anchor="end" alignment-baseline="middle" fill="#333">Phaung Gyi</text>
+
+    <!-- Value -->
+    <text x="190" y="537.5" font-family="Arial, sans-serif" font-size="14" font-weight="bold" alignment-baseline="middle" fill="#667eea">34</text>
+    <rect x="0" y="558" width="169.41176470588235" height="21" fill="url(#barGradient)" opacity="0.8"/>
+
+    <!-- Label -->
+    <text x="-10" y="568.5" font-family="Arial, sans-serif" font-size="14" text-anchor="end" alignment-baseline="middle" fill="#333">Kamayut</text>
+
+    <!-- Value -->
+    <text x="179.41176470588235" y="568.5" font-family="Arial, sans-serif" font-size="14" font-weight="bold" alignment-baseline="middle" fill="#667eea">32</text>
+    <rect x="0" y="589" width="169.41176470588235" height="21" fill="url(#barGradient)" opacity="0.8"/>
+
+    <!-- Label -->
+    <text x="-10" y="599.5" font-family="Arial, sans-serif" font-size="14" text-anchor="end" alignment-baseline="middle" fill="#333">Taik Kyi</text>
+
+    <!-- Value -->
+    <text x="179.41176470588235" y="599.5" font-family="Arial, sans-serif" font-size="14" font-weight="bold" alignment-baseline="middle" fill="#667eea">32</text>
+  </g>
+</svg>

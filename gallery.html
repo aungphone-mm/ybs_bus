@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YBS Visualization Gallery</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f5f5;
+            color: #333;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+        .header p {
+            opacity: 0.9;
+            font-size: 1.1rem;
+        }
+        .nav {
+            background: white;
+            padding: 1rem;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        .nav a {
+            display: inline-block;
+            margin: 0 1rem;
+            padding: 0.5rem 1.5rem;
+            background: #667eea;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background 0.3s;
+        }
+        .nav a:hover {
+            background: #5568d3;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+        .section {
+            background: white;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .section h2 {
+            color: #333;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(600px, 1fr));
+            gap: 2rem;
+        }
+        .gallery-item {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .gallery-item h3 {
+            color: #667eea;
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+        }
+        .gallery-item img {
+            width: 100%;
+            height: auto;
+            border-radius: 4px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+        .gallery-item img:hover {
+            transform: scale(1.02);
+        }
+        .gallery-item p {
+            margin-top: 0.5rem;
+            color: #666;
+            font-size: 0.9rem;
+        }
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        .stat-box {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 1.5rem;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #667eea;
+        }
+        .stat-label {
+            color: #666;
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.9);
+            cursor: pointer;
+        }
+        .modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            max-width: 95%;
+            max-height: 95%;
+        }
+        .close {
+            position: absolute;
+            top: 20px;
+            right: 40px;
+            color: white;
+            font-size: 40px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>📊 YBS Visualization Gallery</h1>
+        <p>Complete Geographic Distribution Analysis</p>
+    </div>
+
+    <div class="nav">
+        <a href="index.html">Home</a>
+        <a href="visualize-data.html">Dashboard</a>
+        <a href="route-map.html">Route Map</a>
+        <a href="journey-planner.html">Journey Planner</a>
+        <a href="gallery.html">Gallery</a>
+        <a href="summary-report.html">Report</a>
+    </div>
+
+    <div class="container">
+        <div class="section">
+            <h2>📈 Quick Stats</h2>
+            <div class="stats">
+                <div class="stat-box">
+                    <div class="stat-value">13</div>
+                    <div class="stat-label">Total Visualizations</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value">8</div>
+                    <div class="stat-label">PNG Charts (300 DPI)</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value">5</div>
+                    <div class="stat-label">SVG Charts (Scalable)</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value">2,093</div>
+                    <div class="stat-label">Bus Stops Analyzed</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>🖼️ High-Resolution PNG Charts (Python Generated)</h2>
+            <p style="margin-bottom: 1.5rem; color: #666;">
+                300 DPI publication-quality charts generated with Matplotlib and Seaborn
+            </p>
+            <div class="gallery">
+                <div class="gallery-item">
+                    <h3>1. Geographic Distribution</h3>
+                    <img src="../visualizations/1_geographic_distribution.png" alt="Geographic Distribution" onclick="openModal(this.src)">
+                    <p>Scatter plot of all 2,093 stops color-coded by top 15 townships</p>
+                </div>
+                <div class="gallery-item">
+                    <h3>2. Township Distribution</h3>
+                    <img src="../visualizations/2_township_distribution.png" alt="Township Distribution" onclick="openModal(this.src)">
+                    <p>Top 20 townships with gradient color bars showing stop counts</p>
+                </div>
+                <div class="gallery-item">
+                    <h3>3. Density Heatmap</h3>
+                    <img src="../visualizations/3_density_heatmap.png" alt="Density Heatmap" onclick="openModal(this.src)">
+                    <p>2D heatmap showing concentration of bus stops across Yangon</p>
+                </div>
+                <div class="gallery-item">
+                    <h3>4. Road Distribution</h3>
+                    <img src="../visualizations/4_road_distribution.png" alt="Road Distribution" onclick="openModal(this.src)">
+                    <p>Top 15 roads by stop count - Yangon-Pyay Main Road leads with 152 stops</p>
+                </div>
+                <div class="gallery-item">
+                    <h3>5. Operator Distribution</h3>
+                    <img src="../visualizations/5_operator_distribution.png" alt="Operator Distribution" onclick="openModal(this.src)">
+                    <p>Pie and bar charts showing route distribution across 11 operators</p>
+                </div>
+                <div class="gallery-item">
+                    <h3>6. Route Length Distribution</h3>
+                    <img src="../visualizations/6_route_length_distribution.png" alt="Route Length" onclick="openModal(this.src)">
+                    <p>Histogram and box plots showing stops per route statistics</p>
+                </div>
+                <div class="gallery-item">
+                    <h3>7. Township Coverage</h3>
+                    <img src="../visualizations/7_township_coverage.png" alt="Township Coverage" onclick="openModal(this.src)">
+                    <p>Bubble chart with township centers - bubble size represents stop count</p>
+                </div>
+                <div class="gallery-item">
+                    <h3>8. Summary Dashboard</h3>
+                    <img src="../visualizations/8_summary_dashboard.png" alt="Summary Dashboard" onclick="openModal(this.src)">
+                    <p>All-in-one dashboard with key statistics and mini charts</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>🎨 Scalable Vector Graphics (SVG Charts)</h2>
+            <p style="margin-bottom: 1.5rem; color: #666;">
+                Resolution-independent vector graphics that can be scaled to any size
+            </p>
+            <div class="gallery">
+                <div class="gallery-item">
+                    <h3>SVG 1. Township Distribution</h3>
+                    <img src="../visualizations/1_township_distribution.svg" alt="Township SVG" onclick="openModal(this.src)">
+                    <p>Top 20 townships with gradient bars (scalable vector format)</p>
+                </div>
+                <div class="gallery-item">
+                    <h3>SVG 2. Road Distribution</h3>
+                    <img src="../visualizations/2_road_distribution.svg" alt="Road SVG" onclick="openModal(this.src)">
+                    <p>Top 15 roads by stop count (vector format)</p>
+                </div>
+                <div class="gallery-item">
+                    <h3>SVG 3. Operator Distribution</h3>
+                    <img src="../visualizations/3_operator_distribution.svg" alt="Operator SVG" onclick="openModal(this.src)">
+                    <p>Pie chart showing route distribution by operator</p>
+                </div>
+                <div class="gallery-item">
+                    <h3>SVG 4. Geographic Scatter Plot</h3>
+                    <img src="../visualizations/4_geographic_distribution.svg" alt="Geographic SVG" onclick="openModal(this.src)">
+                    <p>All 2,093 stops plotted with lat/lng coordinates</p>
+                </div>
+                <div class="gallery-item">
+                    <h3>SVG 5. Route Length Histogram</h3>
+                    <img src="../visualizations/5_route_length_distribution.svg" alt="Route Length SVG" onclick="openModal(this.src)">
+                    <p>Distribution of route lengths in 9 bins</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>📥 Download & Usage</h2>
+            <p style="line-height: 1.8; color: #666;">
+                <strong>PNG Files:</strong> Located in <code>visualizations/</code> folder<br>
+                • 300 DPI resolution for print quality<br>
+                • Suitable for reports, presentations, publications<br>
+                • Average size: 200-800 KB per image<br><br>
+
+                <strong>SVG Files:</strong> Located in <code>visualizations/</code> folder<br>
+                • Resolution-independent vector graphics<br>
+                • Can be scaled to any size without quality loss<br>
+                • Editable in vector graphics software<br>
+                • Small file sizes (5-270 KB)<br><br>
+
+                <strong>How to Use:</strong><br>
+                • Click any image to view full-size<br>
+                • Right-click to save images<br>
+                • Open SVG files directly in browsers or vector editors<br>
+                • Embed in HTML, PowerPoint, Word documents<br>
+            </p>
+        </div>
+    </div>
+
+    <!-- Modal for full-size images -->
+    <div id="imageModal" class="modal" onclick="closeModal()">
+        <span class="close">&times;</span>
+        <img class="modal-content" id="modalImage">
+    </div>
+
+    <script>
+        function openModal(src) {
+            document.getElementById('imageModal').style.display = 'block';
+            document.getElementById('modalImage').src = src;
+        }
+
+        function closeModal() {
+            document.getElementById('imageModal').style.display = 'none';
+        }
+
+        // Close modal with Escape key
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                closeModal();
+            }
+        });
+    </script>
+</body>
+</html>

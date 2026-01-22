@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1000" height="800" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1000" height="800" fill="#f8f9fa"/>
+
+  <!-- Title -->
+  <text x="500" y="40" font-family="Arial, sans-serif" font-size="24" font-weight="bold" text-anchor="middle" fill="#333">Route Distribution by Operator</text>
+
+  <g transform="translate(500, 350)">
+    <path d="M 0 0 L 1.6328623988631378e-14 -266.6666666666667 A 266.6666666666667 266.6666666666667 0 1 1 -20.08714814078198 265.90904006949705 Z" fill="#667eea" opacity="0.8" stroke="white" stroke-width="2"/>
+    <text x="186.53403489290997" y="7.035500765054436" font-family="Arial, sans-serif" font-size="14" font-weight="bold" text-anchor="middle" alignment-baseline="middle" fill="white">51.2%</text>
+    <path d="M 0 0 L -20.08714814078198 265.90904006949705 A 266.6666666666667 266.6666666666667 0 0 1 -167.38436301085343 207.5899470845396 Z" fill="#f56565" opacity="0.8" stroke="white" stroke-width="2"/>
+    <text x="-68.7165831678065" y="173.55827736580693" font-family="Arial, sans-serif" font-size="14" font-weight="bold" text-anchor="middle" alignment-baseline="middle" fill="white">9.6%</text>
+    <path d="M 0 0 L -167.38436301085343 207.5899470845396 A 266.6666666666667 266.6666666666667 0 0 1 -246.68725515585552 101.27442547248027 Z" fill="#48bb78" opacity="0.8" stroke="white" stroke-width="2"/>
+    <text x="-149.62583717589692" y="111.60893017073688" font-family="Arial, sans-serif" font-size="14" font-weight="bold" text-anchor="middle" alignment-baseline="middle" fill="white">8.0%</text>
+    <path d="M 0 0 L -246.68725515585552 101.27442547248027 A 266.6666666666667 266.6666666666667 0 0 1 -266.1404609142058 -16.744138541150228 Z" fill="#ed8936" opacity="0.8" stroke="white" stroke-width="2"/>
+    <text x="-184.18137625213535" y="30.35893750304497" font-family="Arial, sans-serif" font-size="14" font-weight="bold" text-anchor="middle" alignment-baseline="middle" fill="white">7.2%</text>
+    <path d="M 0 0 L -266.1404609142058 -16.744138541150228 A 266.6666666666667 266.6666666666667 0 0 1 -244.06431269891144 -107.44171619030989 Z" fill="#9f7aea" opacity="0.8" stroke="white" stroke-width="2"/>
+    <text x="-181.3712568107391" y="-44.14647944442863" font-family="Arial, sans-serif" font-size="14" font-weight="bold" text-anchor="middle" alignment-baseline="middle" fill="white">5.6%</text>
+    <path d="M 0 0 L -244.06431269891144 -107.44171619030989 A 266.6666666666667 266.6666666666667 0 0 1 -201.13370152962776 -175.089534867455 Z" fill="#38b2ac" opacity="0.8" stroke="white" stroke-width="2"/>
+    <text x="-157.60787942704283" y="-100.02100172941266" font-family="Arial, sans-serif" font-size="14" font-weight="bold" text-anchor="middle" alignment-baseline="middle" fill="white">4.8%</text>
+    <path d="M 0 0 L -201.13370152962776 -175.089534867455 A 266.6666666666667 266.6666666666667 0 0 1 -151.27171976713504 -219.608692700914 Z" fill="#ecc94b" opacity="0.8" stroke="white" stroke-width="2"/>
+    <text x="-124.32221525439364" y="-139.24234714584733" font-family="Arial, sans-serif" font-size="14" font-weight="bold" text-anchor="middle" alignment-baseline="middle" fill="white">4.0%</text>
+    <path d="M 0 0 L -151.27171976713504 -219.608692700914 A 266.6666666666667 266.6666666666667 0 0 1 -104.36631115658732 -245.39515929756544 Z" fill="#ed64a6" opacity="0.8" stroke="white" stroke-width="2"/>
+    <text x="-89.92735249898699" y="-163.5772469415211" font-family="Arial, sans-serif" font-size="14" font-weight="bold" text-anchor="middle" alignment-baseline="middle" fill="white">3.2%</text>
+    <path d="M 0 0 L -104.36631115658732 -245.39515929756544 A 266.6666666666667 266.6666666666667 0 0 1 -53.2559948038419 -261.2946806357992 Z" fill="#4299e1" opacity="0.8" stroke="white" stroke-width="2"/>
+    <text x="-55.44776189437986" y="-178.24138168604" font-family="Arial, sans-serif" font-size="14" font-weight="bold" text-anchor="middle" alignment-baseline="middle" fill="white">3.2%</text>
+    <path d="M 0 0 L -53.2559948038419 -261.2946806357992 A 266.6666666666667 266.6666666666667 0 0 1 -26.763123960324013 -265.3202711950134 Z" fill="#9ae6b4" opacity="0.8" stroke="white" stroke-width="2"/>
+    <path d="M 0 0 L -26.763123960324013 -265.3202711950134 A 266.6666666666667 266.6666666666667 0 0 1 -4.898587196589413e-14 -266.6666666666667 Z" fill="#fc8181" opacity="0.8" stroke="white" stroke-width="2"/>
+  </g>
+
+  <!-- Legend -->
+  <g transform="translate(50, 600)">
+    <rect x="0" y="0" width="20" height="20" fill="#667eea" opacity="0.8"/>
+    <text x="30" y="15" font-family="Arial, sans-serif" font-size="13" fill="#333">YRTA: 64</text>
+    <rect x="0" y="25" width="20" height="20" fill="#f56565" opacity="0.8"/>
+    <text x="30" y="40" font-family="Arial, sans-serif" font-size="13" fill="#333">YBPC: 12</text>
+    <rect x="0" y="50" width="20" height="20" fill="#48bb78" opacity="0.8"/>
+    <text x="30" y="65" font-family="Arial, sans-serif" font-size="13" fill="#333">GYCT: 10</text>
+    <rect x="0" y="75" width="20" height="20" fill="#ed8936" opacity="0.8"/>
+    <text x="30" y="90" font-family="Arial, sans-serif" font-size="13" fill="#333">YUPT: 9</text>
+    <rect x="0" y="100" width="20" height="20" fill="#9f7aea" opacity="0.8"/>
+    <text x="30" y="115" font-family="Arial, sans-serif" font-size="13" fill="#333">OMNIFOCUS: 7</text>
+    <rect x="0" y="125" width="20" height="20" fill="#38b2ac" opacity="0.8"/>
+    <text x="30" y="140" font-family="Arial, sans-serif" font-size="13" fill="#333">BDL: 6</text>
+    <rect x="0" y="150" width="20" height="20" fill="#ecc94b" opacity="0.8"/>
+    <text x="30" y="165" font-family="Arial, sans-serif" font-size="13" fill="#333">LuDu: 5</text>
+    <rect x="0" y="175" width="20" height="20" fill="#ed64a6" opacity="0.8"/>
+    <text x="30" y="190" font-family="Arial, sans-serif" font-size="13" fill="#333">P11: 4</text>
+    <rect x="0" y="200" width="20" height="20" fill="#4299e1" opacity="0.8"/>
+    <text x="30" y="215" font-family="Arial, sans-serif" font-size="13" fill="#333">KBG: 4</text>
+    <rect x="0" y="225" width="20" height="20" fill="#9ae6b4" opacity="0.8"/>
+    <text x="30" y="240" font-family="Arial, sans-serif" font-size="13" fill="#333">Unknown: 2</text>
+    <rect x="0" y="250" width="20" height="20" fill="#fc8181" opacity="0.8"/>
+    <text x="30" y="265" font-family="Arial, sans-serif" font-size="13" fill="#333">TRAN: 2</text>
+  </g>
+</svg>

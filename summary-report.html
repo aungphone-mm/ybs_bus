@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YBS Data Summary Report</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 2rem;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 3rem 2rem;
+            text-align: center;
+        }
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        .content {
+            padding: 2rem;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+        .stat-card {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 2rem;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+        .stat-value {
+            font-size: 3rem;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 0.5rem;
+        }
+        .stat-label {
+            color: #666;
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .section {
+            margin-bottom: 3rem;
+        }
+        .section h2 {
+            color: #333;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+        .table-container {
+            overflow-x: auto;
+            margin-bottom: 2rem;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+        th {
+            background: #f8f9fa;
+            color: #333;
+            font-weight: 600;
+        }
+        tr:hover {
+            background: #f8f9fa;
+        }
+        .bar {
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            height: 25px;
+            border-radius: 4px;
+            display: inline-block;
+            min-width: 2px;
+        }
+        .footer {
+            background: #f8f9fa;
+            padding: 2rem;
+            text-align: center;
+            color: #666;
+            border-top: 1px solid #eee;
+        }
+        .highlight {
+            background: #fff3cd;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚌 YBS Data Summary Report</h1>
+            <p>Yangon Bus Service - Complete Analysis</p>
+        </div>
+
+        <nav style="background: white; padding: 0.8rem 1rem; box-shadow: 0 2px 5px rgba(0,0,0,0.1); display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center;">
+            <a href="index.html" style="padding: 0.5rem 1rem; background: #667eea; color: white; text-decoration: none; border-radius: 4px; font-size: 0.9rem; transition: background 0.2s;">Home</a>
+            <a href="visualize-data.html" style="padding: 0.5rem 1rem; background: #667eea; color: white; text-decoration: none; border-radius: 4px; font-size: 0.9rem; transition: background 0.2s;">Dashboard</a>
+            <a href="route-map.html" style="padding: 0.5rem 1rem; background: #667eea; color: white; text-decoration: none; border-radius: 4px; font-size: 0.9rem; transition: background 0.2s;">Route Map</a>
+            <a href="journey-planner.html" style="padding: 0.5rem 1rem; background: #667eea; color: white; text-decoration: none; border-radius: 4px; font-size: 0.9rem; transition: background 0.2s;">Journey Planner</a>
+            <a href="gallery.html" style="padding: 0.5rem 1rem; background: #667eea; color: white; text-decoration: none; border-radius: 4px; font-size: 0.9rem; transition: background 0.2s;">Gallery</a>
+            <a href="summary-report.html" style="padding: 0.5rem 1rem; background: #667eea; color: white; text-decoration: none; border-radius: 4px; font-size: 0.9rem; transition: background 0.2s;">Report</a>
+        </nav>
+
+        <div class="content">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value">2093</div>
+                    <div class="stat-label">Total Stops</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">44</div>
+                    <div class="stat-label">Townships</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">125</div>
+                    <div class="stat-label">Route Variants</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">110</div>
+                    <div class="stat-label">Route Numbers</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">104.1</div>
+                    <div class="stat-label">Avg Stops/Route</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">11</div>
+                    <div class="stat-label">Operators</div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>📍 Geographic Coverage</h2>
+                <p>
+                    <strong>Coverage Area:</strong> ~96.2km × 73.9km<br>
+                    <strong>Latitude Range:</strong> 16.633214° to 17.500193°<br>
+                    <strong>Longitude Range:</strong> 95.854539° to 96.520489°
+                </p>
+            </div>
+
+            <div class="section">
+                <h2>🏘️ Top 15 Townships by Stop Count</h2>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Rank</th>
+                                <th>Township</th>
+                                <th>Stops</th>
+                                <th>Percentage</th>
+                                <th>Distribution</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            
+                                <tr>
+                                    <td>1</td>
+                                    <td><strong>Thanlyin</strong></td>
+                                    <td>170</td>
+                                    <td>8.1%</td>
+                                    <td><div class="bar" style="width: 300px;"></div></td>
+                                </tr>
+                              
+                                <tr>
+                                    <td>2</td>
+                                    <td><strong>North Dagon</strong></td>
+                                    <td>140</td>
+                                    <td>6.7%</td>
+                                    <td><div class="bar" style="width: 247.05882352941174px;"></div></td>
+                                </tr>
+                              
+                                <tr>
+                                    <td>3</td>
+                                    <td><strong>Mingalardon</strong></td>
+                                    <td>134</td>
+                                    <td>6.4%</td>
+                                    <td><div class="bar" style="width: 236.47058823529412px;"></div></td>
+                                </tr>
+                              
+                                <tr>
+                                    <td>4</td>
+                                    <td><strong>South Dagon</strong></td>
+                                    <td>127</td>
+                                    <td>6.1%</td>
+                                    <td><div class="bar" style="width: 224.11764705882354px;"></div></td>
+                                </tr>
+                              
+                                <tr>
+                                    <td>5</td>
+                                    <td><strong>Thaketa</strong></td>
+                                    <td>122</td>
+                                    <td>5.8%</td>
+                                    <td><div class="bar" style="width: 215.2941176470588px;"></div></td>
+                                </tr>
+                              
+                                <tr>
+                                    <td>6</td>
+                                    <td><strong>Shwe Pyithar</strong></td>
+                                    <td>120</td>
+                                    <td>5.7%</td>
+                                    <td><div class="bar" style="width: 211.76470588235296px;"></div></td>
+                                </tr>
+                              
+                                <tr>
+                                    <td>7</td>
+                                    <td><strong>Insein</strong></td>
+                                    <td>117</td>
+                                    <td>5.6%</td>
+                                    <td><div class="bar" style="width: 206.47058823529412px;"></div></td>
+                                </tr>
+                              
+                                <tr>
+                                    <td>8</td>
+                                    <td><strong>North Okkalapa</strong></td>
+                                    <td>110</td>
+                                    <td>5.3%</td>
+                                    <td><div class="bar" style="width: 194.11764705882354px;"></div></td>
+                                </tr>
+                              
+                                <tr>
+                                    <td>9</td>
+                                    <td><strong>Thingangyun</strong></td>
+                                    <td>93</td>
+                                    <td>4.4%</td>
+                                    <td><div class="bar" style="width: 164.11764705882354px;"></div></td>
+                                </tr>
+                              
+                                <tr>
+                                    <td>10</td>
+                                    <td><strong>Hlaing Tharyar</strong></td>
+                                    <td>90</td>
+                                    <td>4.3%</td>
+                                    <td><div class="bar" style="width: 158.8235294117647px;"></div></td>
+                                </tr>
+                              
+                                <tr>
+                                    <td>11</td>
+                                    <td><strong>Mayangone</strong></td>
+                                    <td>71</td>
+                                    <td>3.4%</td>
+                                    <td><div class="bar" style="width: 125.29411764705883px;"></div></td>
+                                </tr>
+                              
+                                <tr>
+                                    <td>12</td>
+                                    <td><strong>Hmaw Bi</strong></td>
+                                    <td>70</td>
+                                    <td>3.3%</td>
+                                    <td><div class="bar" style="width: 123.52941176470587px;"></div></td>
+                                </tr>
+                              
+                                <tr>
+                                    <td>13</td>
+                                    <td><strong>Hlegu</strong></td>
+                                    <td>68</td>
+                                    <td>3.2%</td>
+                                    <td><div class="bar" style="width: 120px;"></div></td>
+                                </tr>
+                              
+                                <tr>
+                                    <td>14</td>
+                                    <td><strong>South Okkalapa</strong></td>
+                                    <td>64</td>
+                                    <td>3.1%</td>
+                                    <td><div class="bar" style="width: 112.94117647058823px;"></div></td>
+                                </tr>
+                              
+                                <tr>
+                                    <td>15</td>
+                                    <td><strong>Bahan</strong></td>
+                                    <td>59</td>
+                                    <td>2.8%</td>
+                                    <td><div class="bar" style="width: 104.11764705882352px;"></div></td>
+                                </tr>
+                              
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>🛣️ Top 10 Roads by Stop Count</h2>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Rank</th>
+                                <th>Road Name</th>
+                                <th>Stops</th>
+                                <th>Distribution</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            
+                                <tr>
+                                    <td>1</td>
+                                    <td><strong>Yangon-Pyay Main Road</strong></td>
+                                    <td>152</td>
+                                    <td><div class="bar" style="width: 300px;"></div></td>
+                                </tr>
+                              
+                                <tr>
+                                    <td>2</td>
+                                    <td><strong>No. 1 Main Road</strong></td>
+                                    <td>104</td>
+                                    <td><div class="bar" style="width: 205.26315789473685px;"></div></td>
+                                </tr>
+                              
+                                <tr>
+                                    <td>3</td>
+                                    <td><strong>No. 6 Main Road</strong></td>
+                                    <td>96</td>
+                                    <td><div class="bar" style="width: 189.4736842105263px;"></div></td>
+                                </tr>
+                              
+                                <tr>
+                                    <td>4</td>
+                                    <td><strong>Bayint Naung Road</strong></td>
+                                    <td>70</td>
+                                    <td><div class="bar" style="width: 138.1578947368421px;"></div></td>
+                                </tr>
+                              
+                                <tr>
+                                    <td>5</td>
+                                    <td><strong>Hlegu-Phaung Gyi Road</strong></td>
+                                    <td>68</td>
+                                    <td><div class="bar" style="width: 134.21052631578948px;"></div></td>
+                                </tr>
+                              
+                                <tr>
+                                    <td>6</td>
+                                    <td><strong>Thanlyin-Kyauktan Road</strong></td>
+                                    <td>59</td>
+                                    <td><div class="bar" style="width: 116.44736842105263px;"></div></td>
+                                </tr>
+                              
+                                <tr>
+                                    <td>7</td>
+                                    <td><strong>No. 2 Main Road</strong></td>
+                                    <td>58</td>
+                                    <td><div class="bar" style="width: 114.47368421052632px;"></div></td>
+                                </tr>
+                              
+                                <tr>
+                                    <td>8</td>
+                                    <td><strong>Pyi Htaung Su Main Road</strong></td>
+                                    <td>56</td>
+                                    <td><div class="bar" style="width: 110.52631578947368px;"></div></td>
+                                </tr>
+                              
+                                <tr>
+                                    <td>9</td>
+                                    <td><strong>Thanthumar Road</strong></td>
+                                    <td>53</td>
+                                    <td><div class="bar" style="width: 104.60526315789473px;"></div></td>
+                                </tr>
+                              
+                                <tr>
+                                    <td>10</td>
+                                    <td><strong>Pyay Road</strong></td>
+                                    <td>44</td>
+                                    <td><div class="bar" style="width: 86.8421052631579px;"></div></td>
+                                </tr>
+                              
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>🚍 Route Operators</h2>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Rank</th>
+                                <th>Operator</th>
+                                <th>Routes</th>
+                                <th>Market Share</th>
+                                <th>Distribution</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            
+                                <tr>
+                                    <td>1</td>
+                                    <td><strong>YRTA</strong></td>
+                                    <td>64</td>
+                                    <td>51.2%</td>
+                                    <td><div class="bar" style="width: 300px;"></div></td>
+                                </tr>
+                              
+                                <tr>
+                                    <td>2</td>
+                                    <td><strong>YBPC</strong></td>
+                                    <td>12</td>
+                                    <td>9.6%</td>
+                                    <td><div class="bar" style="width: 56.25px;"></div></td>
+                                </tr>
+                              
+                                <tr>
+                                    <td>3</td>
+                                    <td><strong>GYCT</strong></td>
+                                    <td>10</td>
+                                    <td>8.0%</td>
+                                    <td><div class="bar" style="width: 46.875px;"></div></td>
+                                </tr>
+                              
+                                <tr>
+                                    <td>4</td>
+                                    <td><strong>YUPT</strong></td>
+                                    <td>9</td>
+                                    <td>7.2%</td>
+                                    <td><div class="bar" style="width: 42.1875px;"></div></td>
+                                </tr>
+                              
+                                <tr>
+                                    <td>5</td>
+                                    <td><strong>OMNIFOCUS</strong></td>
+                                    <td>7</td>
+                                    <td>5.6%</td>
+                                    <td><div class="bar" style="width: 32.8125px;"></div></td>
+                                </tr>
+                              
+                                <tr>
+                                    <td>6</td>
+                                    <td><strong>BDL</strong></td>
+                                    <td>6</td>
+                                    <td>4.8%</td>
+                                    <td><div class="bar" style="width: 28.125px;"></div></td>
+                                </tr>
+                              
+                                <tr>
+                                    <td>7</td>
+                                    <td><strong>LuDu</strong></td>
+                                    <td>5</td>
+                                    <td>4.0%</td>
+                                    <td><div class="bar" style="width: 23.4375px;"></div></td>
+                                </tr>
+                              
+                                <tr>
+                                    <td>8</td>
+                                    <td><strong>P11</strong></td>
+                                    <td>4</td>
+                                    <td>3.2%</td>
+                                    <td><div class="bar" style="width: 18.75px;"></div></td>
+                                </tr>
+                              
+                                <tr>
+                                    <td>9</td>
+                                    <td><strong>KBG</strong></td>
+                                    <td>4</td>
+                                    <td>3.2%</td>
+                                    <td><div class="bar" style="width: 18.75px;"></div></td>
+                                </tr>
+                              
+                                <tr>
+                                    <td>10</td>
+                                    <td><strong>Unknown</strong></td>
+                                    <td>2</td>
+                                    <td>1.6%</td>
+                                    <td><div class="bar" style="width: 9.375px;"></div></td>
+                                </tr>
+                              
+                                <tr>
+                                    <td>11</td>
+                                    <td><strong>TRAN</strong></td>
+                                    <td>2</td>
+                                    <td>1.6%</td>
+                                    <td><div class="bar" style="width: 9.375px;"></div></td>
+                                </tr>
+                              
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>📊 Key Insights</h2>
+                <ul style="line-height: 1.8; color: #555;">
+                    <li><span class="highlight">Most Served Township:</span> Thanlyin with 170 stops</li>
+                    <li><span class="highlight">Busiest Road:</span> Yangon-Pyay Main Road with 152 stops</li>
+                    <li><span class="highlight">Dominant Operator:</span> YRTA operating 64 routes (51.2%)</li>
+                    <li><span class="highlight">Average Route Length:</span> 104.1 stops</li>
+                    <li><span class="highlight">Longest Route:</span> 281 stops</li>
+                    <li><span class="highlight">Shortest Route:</span> 14 stops</li>
+                    <li><span class="highlight">Coverage Efficiency:</span> 99.4% of stops actively used</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p><strong>Generated:</strong> 1/17/2026, 11:34:37 AM</p>
+            <p>YBS Guide V3 • Data Quality Score: GOOD</p>
+            <p>For interactive visualizations, visit: <a href="http://localhost:8080/visualize-data.html">http://localhost:8080/visualize-data.html</a></p>
+        </div>
+    </div>
+</body>
+</html>

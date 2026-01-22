@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YBS Journey Planner - Find Your Bus Route</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <!-- Journey Planning Modules -->
+    <script src="js/stopMatcher.js"></script>
+    <script src="js/routeIndex.js"></script>
+    <script src="js/pathfinder.js"></script>
+    <script src="js/autocomplete.js"></script>
+    <script src="js/journeyUI.js"></script>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f5f5;
+        }
+        .header {
+            background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+            color: white;
+            padding: 1.5rem 2rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .header h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+        .header p {
+            opacity: 0.95;
+            font-size: 1.05rem;
+        }
+        .nav {
+            background: white;
+            padding: 0.5rem 1rem;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        .nav a {
+            padding: 0.5rem 1rem;
+            background: #48bb78;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            transition: background 0.2s;
+        }
+        .nav a:hover {
+            background: #38a169;
+        }
+        .container {
+            display: flex;
+            height: calc(100vh - 150px);
+            gap: 0;
+        }
+        .search-panel {
+            width: 420px;
+            background: white;
+            padding: 2rem;
+            overflow-y: auto;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+        }
+        .search-section {
+            margin-bottom: 2rem;
+        }
+        .search-section h2 {
+            color: #333;
+            font-size: 1.4rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .input-group {
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+        .input-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #333;
+            font-size: 0.95rem;
+        }
+        .input-group input {
+            width: 100%;
+            padding: 0.9rem;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.2s;
+        }
+        .input-group input:focus {
+            outline: none;
+            border-color: #48bb78;
+            box-shadow: 0 0 0 3px rgba(72, 187, 120, 0.1);
+        }
+        .btn-primary {
+            width: 100%;
+            padding: 1rem;
+            background: #48bb78;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 2px 8px rgba(72, 187, 120, 0.3);
+        }
+        .btn-primary:hover {
+            background: #38a169;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(72, 187, 120, 0.4);
+        }
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+        .btn-secondary {
+            width: 100%;
+            padding: 0.8rem;
+            background: white;
+            color: #666;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-top: 0.8rem;
+        }
+        .btn-secondary:hover {
+            border-color: #48bb78;
+            color: #48bb78;
+        }
+        .results-panel {
+            width: 450px;
+            background: #f8f9fa;
+            overflow-y: auto;
+            padding: 2rem;
+        }
+        .results-header {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+        .results-header h2 {
+            color: #333;
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+        .results-summary {
+            font-size: 1rem;
+            color: #666;
+            line-height: 1.6;
+        }
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+        }
+        .empty-state-icon {
+            font-size: 5rem;
+            margin-bottom: 1.5rem;
+            opacity: 0.3;
+        }
+        .empty-state h3 {
+            font-size: 1.5rem;
+            color: #333;
+            margin-bottom: 0.8rem;
+        }
+        .empty-state p {
+            font-size: 1rem;
+            color: #666;
+            line-height: 1.6;
+        }
+        .loading-spinner {
+            display: none;
+            text-align: center;
+            padding: 2rem;
+        }
+        .loading-spinner.active {
+            display: block;
+        }
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #48bb78;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .map-container {
+            flex: 1;
+            position: relative;
+            height: 100%;
+        }
+        #map {
+            width: 100%;
+            height: 100%;
+        }
+        .info-box {
+            background: #e6f7ff;
+            border-left: 4px solid #1890ff;
+            padding: 1rem;
+            border-radius: 4px;
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+            color: #003a8c;
+        }
+        .swap-btn {
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: all 0.2s;
+        }
+        .swap-btn:hover {
+            background: #48bb78;
+            color: white;
+            border-color: #48bb78;
+            transform: translateY(-50%) rotate(180deg);
+        }
+
+        @media (max-width: 1024px) {
+            .container {
+                flex-direction: column;
+                height: auto;
+            }
+            .search-panel {
+                width: 100%;
+            }
+            .results-panel {
+                width: 100%;
+                min-height: 400px;
+            }
+            .map-container {
+                position: relative;
+                height: 400px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🗺️ YBS Journey Planner</h1>
+        <p>Find the best bus routes from your origin to destination</p>
+    </div>
+
+    <div class="nav">
+        <a href="index.html">Home</a>
+        <a href="visualize-data.html">Dashboard</a>
+        <a href="route-map.html">Route Map</a>
+        <a href="journey-planner.html">Journey Planner</a>
+        <a href="gallery.html">Gallery</a>
+        <a href="summary-report.html">Report</a>
+    </div>
+
+    <div class="container">
+        <!-- Left Panel: Search -->
+        <div class="search-panel">
+            <div class="search-section">
+                <h2>📍 Plan Your Journey</h2>
+
+                <div class="info-box">
+                    💡 <strong>Tip:</strong> Type stop name in English or Myanmar, or click stops on the map
+                </div>
+
+                <div style="position: relative;">
+                    <div class="input-group">
+                        <label>🟢 From (Origin)</label>
+                        <input type="text" id="originInput" placeholder="e.g., Hledan, Sule, Shwedagon...">
+                    </div>
+
+                    <button class="swap-btn" id="swapBtn" title="Swap origin and destination">⇅</button>
+
+                    <div class="input-group">
+                        <label>🔴 To (Destination)</label>
+                        <input type="text" id="destinationInput" placeholder="e.g., Aung San Stadium, Inya Lake...">
+                    </div>
+                </div>
+
+                <button class="btn-primary" id="findRoutesBtn">
+                    🔍 Find Routes
+                </button>
+
+                <button class="btn-secondary" id="clearBtn">
+                    Clear All
+                </button>
+            </div>
+
+            <!-- Loading state -->
+            <div class="loading-spinner" id="loadingSpinner">
+                <div class="spinner"></div>
+                <p style="color: #666;">Finding best routes...</p>
+            </div>
+
+            <!-- Quick stats (shown after search) -->
+            <div id="quickStats" style="display: none; margin-top: 2rem;">
+                <div style="background: #f8f9fa; padding: 1rem; border-radius: 8px;">
+                    <div style="font-size: 0.85em; color: #666; margin-bottom: 0.5rem;">SEARCH RESULTS</div>
+                    <div style="display: flex; gap: 1rem; justify-content: space-between;">
+                        <div>
+                            <div style="font-size: 1.5rem; font-weight: bold; color: #48bb78;" id="statsRoutes">0</div>
+                            <div style="font-size: 0.85em; color: #666;">Routes Found</div>
+                        </div>
+                        <div>
+                            <div style="font-size: 1.5rem; font-weight: bold; color: #667eea;" id="statsDirect">0</div>
+                            <div style="font-size: 0.85em; color: #666;">Direct Routes</div>
+                        </div>
+                        <div>
+                            <div style="font-size: 1.5rem; font-weight: bold; color: #ed8936;" id="statsTransfers">0</div>
+                            <div style="font-size: 0.85em; color: #666;">With Transfers</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Middle Panel: Results -->
+        <div class="results-panel">
+            <!-- Empty state -->
+            <div class="empty-state" id="emptyState">
+                <div class="empty-state-icon">🚌</div>
+                <h3>Ready to Plan Your Journey</h3>
+                <p>
+                    Enter your origin and destination in the search panel,<br>
+                    then click "Find Routes" to discover the best bus options<br>
+                    to reach your destination.
+                </p>
+                <p style="margin-top: 1rem; font-size: 0.9em; color: #999;">
+                    Supports multi-transfer journeys with up to 2 transfers
+                </p>
+            </div>
+
+            <!-- Results container -->
+            <div id="resultsContainer" style="display: none;">
+                <div class="results-header">
+                    <h2>Journey Options</h2>
+                    <div class="results-summary" id="resultsSummary"></div>
+                </div>
+                <div id="journeyResults"></div>
+            </div>
+        </div>
+
+        <!-- Right Panel: Map -->
+        <div class="map-container">
+            <div id="map"></div>
+        </div>
+    </div>
+
+    <script>
+        let map;
+        let routesData = [];
+        let stopsData = {};
+        let pathfinder;
+        let journeyUI;
+        let originAutocomplete;
+        let destinationAutocomplete;
+        let selectedOrigin = null;
+        let selectedDestination = null;
+        let journeyLayers = [];
+
+        // Initialize map (small, for reference)
+        function initMap() {
+            map = L.map('map', {
+                zoomControl: true,
+                scrollWheelZoom: true
+            }).setView([16.8, 96.15], 12);
+
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap contributors',
+                maxZoom: 18
+            }).addTo(map);
+
+            // Add legend
+            const legend = L.control({ position: 'bottomright' });
+            legend.onAdd = function() {
+                const div = L.DomUtil.create('div', 'info legend');
+                div.style.cssText = `
+                    background: white;
+                    padding: 1rem;
+                    border-radius: 6px;
+                    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+                    font-size: 0.85rem;
+                `;
+                div.innerHTML = `
+                    <div style="font-weight: 600; margin-bottom: 0.5rem;">Legend</div>
+                    <div style="display: flex; align-items: center; margin: 0.3rem 0;">
+                        <span style="width: 12px; height: 12px; background: #48bb78; border-radius: 50%; display: inline-block; margin-right: 0.5rem;"></span>
+                        <span>Origin</span>
+                    </div>
+                    <div style="display: flex; align-items: center; margin: 0.3rem 0;">
+                        <span style="width: 12px; height: 12px; background: #f56565; border-radius: 50%; display: inline-block; margin-right: 0.5rem;"></span>
+                        <span>Destination</span>
+                    </div>
+                    <div style="display: flex; align-items: center; margin: 0.3rem 0;">
+                        <span style="width: 12px; height: 12px; background: #ffd93d; border-radius: 50%; display: inline-block; margin-right: 0.5rem;"></span>
+                        <span>Transfer</span>
+                    </div>
+                    <div style="display: flex; align-items: center; margin: 0.3rem 0;">
+                        <span style="width: 20px; height: 3px; background: #667eea; display: inline-block; margin-right: 0.5rem;"></span>
+                        <span>Route</span>
+                    </div>
+                `;
+                return div;
+            };
+            legend.addTo(map);
+        }
+
+        // Load data
+        async function loadData() {
+            try {
+                console.log('[JourneyPlanner] Loading data...');
+
+                // Load stops
+                const stopsResponse = await fetch('data/stops.tsv');
+                const stopsText = await stopsResponse.text();
+                const stopsLines = stopsText.split('\n').filter(line => line.trim());
+
+                stopsLines.slice(1).forEach(line => {
+                    const values = line.split('\t');
+                    stopsData[values[0]] = {
+                        id: values[0],
+                        lat: parseFloat(values[1]),
+                        lng: parseFloat(values[2]),
+                        name_en: values[3],
+                        name_mm: values[4],
+                        road_en: values[5],
+                        township_en: values[7]
+                    };
+                });
+
+                console.log(`[JourneyPlanner] Loaded ${Object.keys(stopsData).length} stops`);
+
+                // Load routes index
+                const indexResponse = await fetch('data/routes-index.json');
+                const routesIndex = await indexResponse.json();
+
+                // Load all routes
+                for (const [routeNum, files] of Object.entries(routesIndex)) {
+                    for (const file of files) {
+                        try {
+                            const response = await fetch(`data/routes/${file}`);
+                            const route = await response.json();
+                            routesData.push({
+                                ...route,
+                                route_num: routeNum,
+                                file: file
+                            });
+                        } catch (e) {
+                            console.warn(`Could not load ${file}`);
+                        }
+                    }
+                }
+
+                console.log(`[JourneyPlanner] Loaded ${routesData.length} routes`);
+
+                return true;
+            } catch (error) {
+                console.error('[JourneyPlanner] Error loading data:', error);
+                alert('Error loading bus data. Please refresh the page.');
+                return false;
+            }
+        }
+
+        // Initialize journey planner
+        async function initJourneyPlanner() {
+            console.log('[JourneyPlanner] Initializing...');
+
+            try {
+                // Initialize stopMatcher
+                stopMatcher.initialize(stopsData);
+
+                // Initialize routeIndex
+                await routeIndex.initialize(routesData);
+
+                // Create pathfinder
+                pathfinder = new PathFinder(routeIndex, stopMatcher);
+
+                // Initialize autocomplete
+                originAutocomplete = new Autocomplete(
+                    document.getElementById('originInput'),
+                    stopMatcher,
+                    {
+                        placeholder: 'Search origin stop...',
+                        onSelect: (stop) => {
+                            selectedOrigin = stop;
+                            console.log('[JourneyPlanner] Origin:', stop.name_en);
+                        }
+                    }
+                );
+
+                destinationAutocomplete = new Autocomplete(
+                    document.getElementById('destinationInput'),
+                    stopMatcher,
+                    {
+                        placeholder: 'Search destination stop...',
+                        onSelect: (stop) => {
+                            selectedDestination = stop;
+                            console.log('[JourneyPlanner] Destination:', stop.name_en);
+                        }
+                    }
+                );
+
+                // Initialize journey UI
+                journeyUI = new JourneyUI(
+                    document.getElementById('journeyResults'),
+                    {
+                        onShowOnMap: showJourneyOnMap,
+                        showActions: true,
+                        expandFirst: true
+                    }
+                );
+
+                // Event listeners
+                document.getElementById('findRoutesBtn').addEventListener('click', findRoutes);
+                document.getElementById('clearBtn').addEventListener('click', clearAll);
+                document.getElementById('swapBtn').addEventListener('click', swapOriginDestination);
+
+                console.log('[JourneyPlanner] Ready!');
+            } catch (error) {
+                console.error('[JourneyPlanner] Initialization error:', error);
+                alert('Error initializing journey planner. Please refresh.');
+            }
+        }
+
+        // Find routes
+        async function findRoutes() {
+            if (!selectedOrigin || !selectedDestination) {
+                alert('Please select both origin and destination stops');
+                return;
+            }
+
+            if (selectedOrigin.id === selectedDestination.id) {
+                alert('Origin and destination must be different');
+                return;
+            }
+
+            // Show loading
+            document.getElementById('loadingSpinner').classList.add('active');
+            document.getElementById('emptyState').style.display = 'none';
+            document.getElementById('resultsContainer').style.display = 'none';
+            document.getElementById('quickStats').style.display = 'none';
+
+            console.log('[JourneyPlanner] Finding routes from', selectedOrigin.name_en, 'to', selectedDestination.name_en);
+
+            // Small delay for UI feedback
+            await new Promise(resolve => setTimeout(resolve, 300));
+
+            try {
+                // Find paths
+                const paths = pathfinder.findAllPaths(selectedOrigin.id, selectedDestination.id, {
+                    maxTransfers: 2,
+                    maxPaths: 10,
+                    maxDistance: 50,
+                    timeout: 5000
+                });
+
+                console.log(`[JourneyPlanner] Found ${paths.length} paths`);
+
+                // Hide loading
+                document.getElementById('loadingSpinner').classList.remove('active');
+
+                if (paths.length === 0) {
+                    alert('No routes found. Try selecting stops with better connections.');
+                    document.getElementById('emptyState').style.display = 'block';
+                    return;
+                }
+
+                // Show results
+                document.getElementById('resultsContainer').style.display = 'block';
+
+                // Update summary
+                const directCount = paths.filter(p => p.transferCount === 0).length;
+                document.getElementById('resultsSummary').innerHTML = `
+                    From <strong>${selectedOrigin.name_en}</strong> to <strong>${selectedDestination.name_en}</strong><br>
+                    <span style="color: #48bb78; font-weight: 600;">${paths.length} route${paths.length > 1 ? 's' : ''} available</span>
+                    ${directCount > 0 ? `(${directCount} direct)` : ''}
+                `;
+
+                // Update quick stats
+                document.getElementById('quickStats').style.display = 'block';
+                document.getElementById('statsRoutes').textContent = paths.length;
+                document.getElementById('statsDirect').textContent = directCount;
+                document.getElementById('statsTransfers').textContent = paths.length - directCount;
+
+                // Render paths
+                journeyUI.renderPaths(paths);
+
+                // Show first path on map
+                if (paths.length > 0) {
+                    showJourneyOnMap(paths[0], 0);
+                }
+
+            } catch (error) {
+                console.error('[JourneyPlanner] Error finding routes:', error);
+                document.getElementById('loadingSpinner').classList.remove('active');
+                alert('Error finding routes. Please try again.');
+                document.getElementById('emptyState').style.display = 'block';
+            }
+        }
+
+        // Show journey on map
+        function showJourneyOnMap(path, index) {
+            console.log('[JourneyPlanner] Showing path', index);
+
+            // Clear previous
+            clearJourneyLayers();
+
+            // Draw each leg
+            path.legs.forEach((leg, legIndex) => {
+                const route = routeIndex.getRouteData(leg.route);
+                if (!route || !route.shape || !route.shape.geometry) return;
+
+                const coords = route.shape.geometry.coordinates;
+                const boardIdx = route.stops.findIndex(id => String(id) === String(leg.boardStop.id));
+                const alightIdx = route.stops.findIndex(id => String(id) === String(leg.alightStop.id));
+
+                if (boardIdx === -1 || alightIdx === -1) return;
+
+                const startCoordIdx = Math.floor(boardIdx / route.stops.length * coords.length);
+                const endCoordIdx = Math.min(coords.length - 1, Math.floor(alightIdx / route.stops.length * coords.length));
+                const segmentCoords = coords.slice(startCoordIdx, endCoordIdx + 1).map(c => [c[1], c[0]]);
+
+                // Draw route line with border/outline for better visibility
+                const routeColor = leg.routeColor ? '#' + leg.routeColor : '#667eea';
+
+                // Draw white outline first (for contrast)
+                const outline = L.polyline(segmentCoords, {
+                    color: 'white',
+                    weight: 10,
+                    opacity: 0.8
+                }).addTo(map);
+                journeyLayers.push(outline);
+
+                // Draw colored route line on top
+                const line = L.polyline(segmentCoords, {
+                    color: routeColor,
+                    weight: 6,
+                    opacity: 1
+                }).addTo(map);
+                journeyLayers.push(line);
+
+                // Add markers (larger and more visible)
+                const boardMarker = L.circleMarker([leg.boardStop.lat, leg.boardStop.lng], {
+                    radius: 10,
+                    fillColor: legIndex === 0 ? '#48bb78' : '#ffd93d',
+                    color: 'white',
+                    weight: 3,
+                    fillOpacity: 1
+                }).addTo(map).bindPopup(`<b>${legIndex === 0 ? '🟢 Origin' : '🔄 Transfer'}</b><br>${leg.boardStop.name_en}<br><small>${leg.boardStop.township_en || ''}</small>`);
+                journeyLayers.push(boardMarker);
+
+                if (legIndex === path.legs.length - 1) {
+                    const alightMarker = L.circleMarker([leg.alightStop.lat, leg.alightStop.lng], {
+                        radius: 10,
+                        fillColor: '#f56565',
+                        color: 'white',
+                        weight: 3,
+                        fillOpacity: 1
+                    }).addTo(map).bindPopup(`<b>🔴 Destination</b><br>${leg.alightStop.name_en}<br><small>${leg.alightStop.township_en || ''}</small>`);
+                    journeyLayers.push(alightMarker);
+                }
+            });
+
+            // Fit bounds
+            if (journeyLayers.length > 0) {
+                const group = L.featureGroup(journeyLayers.filter(l => l.getBounds));
+                if (group.getBounds().isValid()) {
+                    map.fitBounds(group.getBounds(), { padding: [30, 30] });
+                }
+            }
+        }
+
+        // Clear journey layers
+        function clearJourneyLayers() {
+            journeyLayers.forEach(layer => map.removeLayer(layer));
+            journeyLayers = [];
+        }
+
+        // Swap origin and destination
+        function swapOriginDestination() {
+            const temp = selectedOrigin;
+            selectedOrigin = selectedDestination;
+            selectedDestination = temp;
+
+            const tempValue = document.getElementById('originInput').value;
+            document.getElementById('originInput').value = document.getElementById('destinationInput').value;
+            document.getElementById('destinationInput').value = tempValue;
+        }
+
+        // Clear all
+        function clearAll() {
+            selectedOrigin = null;
+            selectedDestination = null;
+            document.getElementById('originInput').value = '';
+            document.getElementById('destinationInput').value = '';
+            journeyUI.clear();
+            clearJourneyLayers();
+            document.getElementById('emptyState').style.display = 'block';
+            document.getElementById('resultsContainer').style.display = 'none';
+            document.getElementById('quickStats').style.display = 'none';
+            map.setView([16.8, 96.15], 12);
+        }
+
+        // Initialize
+        initMap();
+        loadData().then(success => {
+            if (success) {
+                initJourneyPlanner();
+            }
+        });
+    </script>
+</body>
+</html>

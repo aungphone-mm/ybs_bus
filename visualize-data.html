@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YBS Route & Stop Geographic Analysis</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f5f5;
+            color: #333;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .header h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+        .header p {
+            opacity: 0.9;
+            font-size: 1.1rem;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 0.5rem;
+        }
+        .stat-label {
+            color: #666;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .viz-section {
+            background: white;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .viz-section h2 {
+            margin-bottom: 1rem;
+            color: #333;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 0.5rem;
+        }
+        #map {
+            height: 600px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .chart-container {
+            position: relative;
+            height: 400px;
+            margin-top: 1rem;
+        }
+        .legend {
+            margin-top: 1rem;
+            padding: 1rem;
+            background: #f8f9fa;
+            border-radius: 4px;
+        }
+        .legend-item {
+            display: inline-block;
+            margin-right: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+        .legend-color {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            margin-right: 0.5rem;
+            vertical-align: middle;
+        }
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            color: #666;
+        }
+        .controls {
+            margin: 1rem 0;
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        .control-btn {
+            padding: 0.5rem 1rem;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: background 0.3s;
+        }
+        .control-btn:hover {
+            background: #5568d3;
+        }
+        .control-btn.active {
+            background: #764ba2;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🚌 YBS Geographic Distribution Analysis</h1>
+        <p>Yangon Bus Service - Stops, Routes & Coverage Visualization</p>
+    </div>
+
+    <nav style="background: white; padding: 0.5rem 1rem; box-shadow: 0 2px 5px rgba(0,0,0,0.1); display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center;">
+        <a href="index.html" style="padding: 0.5rem 1rem; background: #667eea; color: white; text-decoration: none; border-radius: 4px; font-size: 0.9rem; transition: background 0.2s;">Home</a>
+        <a href="visualize-data.html" style="padding: 0.5rem 1rem; background: #667eea; color: white; text-decoration: none; border-radius: 4px; font-size: 0.9rem; transition: background 0.2s;">Dashboard</a>
+        <a href="route-map.html" style="padding: 0.5rem 1rem; background: #667eea; color: white; text-decoration: none; border-radius: 4px; font-size: 0.9rem; transition: background 0.2s;">Route Map</a>
+        <a href="journey-planner.html" style="padding: 0.5rem 1rem; background: #667eea; color: white; text-decoration: none; border-radius: 4px; font-size: 0.9rem; transition: background 0.2s;">Journey Planner</a>
+        <a href="gallery.html" style="padding: 0.5rem 1rem; background: #667eea; color: white; text-decoration: none; border-radius: 4px; font-size: 0.9rem; transition: background 0.2s;">Gallery</a>
+        <a href="summary-report.html" style="padding: 0.5rem 1rem; background: #667eea; color: white; text-decoration: none; border-radius: 4px; font-size: 0.9rem; transition: background 0.2s;">Report</a>
+    </nav>
+
+    <div class="container">
+        <div class="stats-grid" id="statsGrid">
+            <div class="loading">Loading statistics...</div>
+        </div>
+
+        <div class="viz-section">
+            <h2>📍 Interactive Stop Map</h2>
+            <div class="controls">
+                <button class="control-btn active" onclick="showAllStops()">All Stops</button>
+                <button class="control-btn" onclick="showRoutes()">Routes</button>
+                <button class="control-btn" onclick="toggleClusters()">Toggle Clusters</button>
+            </div>
+            <div id="map"></div>
+            <div class="legend">
+                <div class="legend-item">
+                    <span class="legend-color" style="background: #667eea;"></span>
+                    <span>Bus Stop</span>
+                </div>
+                <div class="legend-item">
+                    <span class="legend-color" style="background: #f56565;"></span>
+                    <span>High Density Area</span>
+                </div>
+                <div class="legend-item">
+                    <span class="legend-color" style="background: #48bb78;"></span>
+                    <span>Route Path</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="viz-section">
+            <h2>📊 Township Distribution</h2>
+            <div class="chart-container">
+                <canvas id="townshipChart"></canvas>
+            </div>
+        </div>
+
+        <div class="viz-section">
+            <h2>🛣️ Top Roads by Stop Count</h2>
+            <div class="chart-container">
+                <canvas id="roadChart"></canvas>
+            </div>
+        </div>
+
+        <div class="viz-section">
+            <h2>🚍 Route Operators</h2>
+            <div class="chart-container">
+                <canvas id="operatorChart"></canvas>
+            </div>
+        </div>
+
+        <div class="viz-section">
+            <h2>📈 Route Length Distribution</h2>
+            <div class="chart-container">
+                <canvas id="routeLengthChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let map, markers = [], routeLayers = [];
+        let stopsData = [];
+        let routesData = [];
+
+        // Load and parse TSV data
+        async function loadData() {
+            try {
+                // Load stops
+                const stopsResponse = await fetch('data/stops.tsv');
+                const stopsText = await stopsResponse.text();
+                const stopsLines = stopsText.split('\n').filter(line => line.trim());
+
+                stopsData = stopsLines.slice(1).map(line => {
+                    const values = line.split('\t');
+                    return {
+                        id: values[0],
+                        lat: parseFloat(values[1]),
+                        lng: parseFloat(values[2]),
+                        name_en: values[3],
+                        name_mm: values[4],
+                        road_en: values[5],
+                        road_mm: values[6],
+                        township_en: values[7],
+                        township_mm: values[8]
+                    };
+                }).filter(stop => !isNaN(stop.lat) && !isNaN(stop.lng));
+
+                // Load routes index
+                const routesIndexResponse = await fetch('data/routes-index.json');
+                const routesIndex = await routesIndexResponse.json();
+
+                // Load all routes
+                for (const [routeNum, files] of Object.entries(routesIndex)) {
+                    for (const file of files) {
+                        try {
+                            const response = await fetch(`data/routes/${file}`);
+                            const route = await response.json();
+                            routesData.push({ ...route, route_num: routeNum, file });
+                        } catch (e) {
+                            console.warn(`Could not load ${file}`);
+                        }
+                    }
+                }
+
+                console.log(`Loaded ${stopsData.length} stops and ${routesData.length} routes`);
+
+                initializeVisualizations();
+            } catch (error) {
+                console.error('Error loading data:', error);
+                document.getElementById('statsGrid').innerHTML =
+                    '<div class="loading" style="color: red;">Error loading data. Please ensure you\'re running this from a web server.</div>';
+            }
+        }
+
+        function initializeVisualizations() {
+            createStatsCards();
+            initializeMap();
+            createTownshipChart();
+            createRoadChart();
+            createOperatorChart();
+            createRouteLengthChart();
+        }
+
+        function createStatsCards() {
+            const townships = [...new Set(stopsData.map(s => s.township_en))];
+            const roads = [...new Set(stopsData.map(s => s.road_en))];
+
+            const html = `
+                <div class="stat-card">
+                    <div class="stat-value">${stopsData.length}</div>
+                    <div class="stat-label">Total Stops</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">${townships.length}</div>
+                    <div class="stat-label">Townships</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">${routesData.length}</div>
+                    <div class="stat-label">Route Variants</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">${roads.length}</div>
+                    <div class="stat-label">Unique Roads</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">${Math.round(routesData.reduce((sum, r) => sum + (r.stops?.length || 0), 0) / routesData.length)}</div>
+                    <div class="stat-label">Avg Stops/Route</div>
+                </div>
+            `;
+            document.getElementById('statsGrid').innerHTML = html;
+        }
+
+        function initializeMap() {
+            // Calculate center
+            const avgLat = stopsData.reduce((sum, s) => sum + s.lat, 0) / stopsData.length;
+            const avgLng = stopsData.reduce((sum, s) => sum + s.lng, 0) / stopsData.length;
+
+            map = L.map('map').setView([avgLat, avgLng], 11);
+
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap contributors',
+                maxZoom: 18
+            }).addTo(map);
+
+            showAllStops();
+        }
+
+        function showAllStops() {
+            // Clear existing markers
+            markers.forEach(m => map.removeLayer(m));
+            markers = [];
+            routeLayers.forEach(l => map.removeLayer(l));
+            routeLayers = [];
+
+            // Add markers for all stops
+            stopsData.forEach(stop => {
+                const marker = L.circleMarker([stop.lat, stop.lng], {
+                    radius: 5,
+                    fillColor: '#667eea',
+                    color: '#fff',
+                    weight: 1,
+                    opacity: 1,
+                    fillOpacity: 0.7
+                });
+
+                marker.bindPopup(`
+                    <b>${stop.name_en}</b><br>
+                    ${stop.name_mm}<br>
+                    <small>Road: ${stop.road_en}</small><br>
+                    <small>Township: ${stop.township_en}</small><br>
+                    <small>ID: ${stop.id}</small>
+                `);
+
+                marker.addTo(map);
+                markers.push(marker);
+            });
+
+            setActiveButton(0);
+        }
+
+        function showRoutes() {
+            // Clear existing markers
+            markers.forEach(m => map.removeLayer(m));
+            markers = [];
+            routeLayers.forEach(l => map.removeLayer(l));
+            routeLayers = [];
+
+            // Show first 20 routes to avoid cluttering
+            const colors = ['#667eea', '#f56565', '#48bb78', '#ed8936', '#9f7aea', '#38b2ac', '#ecc94b', '#ed64a6'];
+
+            routesData.slice(0, 20).forEach((route, idx) => {
+                if (route.shape && route.shape.geometry && route.shape.geometry.coordinates) {
+                    const coords = route.shape.geometry.coordinates.map(c => [c[1], c[0]]);
+                    const color = colors[idx % colors.length];
+
+                    const polyline = L.polyline(coords, {
+                        color: color,
+                        weight: 3,
+                        opacity: 0.6
+                    });
+
+                    polyline.bindPopup(`
+                        <b>Route ${route.route_num}</b><br>
+                        ${route.name}<br>
+                        <small>${route.stops?.length || 0} stops</small><br>
+                        <small>Operator: ${route.agency_id}</small>
+                    `);
+
+                    polyline.addTo(map);
+                    routeLayers.push(polyline);
+                }
+            });
+
+            setActiveButton(1);
+        }
+
+        function toggleClusters() {
+            // Toggle marker visibility
+            const visible = markers.length > 0 && markers[0].options.fillOpacity > 0;
+            markers.forEach(m => {
+                m.setStyle({
+                    fillOpacity: visible ? 0 : 0.7,
+                    opacity: visible ? 0 : 1
+                });
+            });
+        }
+
+        function setActiveButton(index) {
+            document.querySelectorAll('.control-btn').forEach((btn, i) => {
+                if (i === index) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
+        }
+
+        function createTownshipChart() {
+            const townshipCounts = {};
+            stopsData.forEach(stop => {
+                const township = stop.township_en || 'Unknown';
+                townshipCounts[township] = (townshipCounts[township] || 0) + 1;
+            });
+
+            const sorted = Object.entries(townshipCounts)
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, 15);
+
+            new Chart(document.getElementById('townshipChart'), {
+                type: 'bar',
+                data: {
+                    labels: sorted.map(([name]) => name),
+                    datasets: [{
+                        label: 'Number of Stops',
+                        data: sorted.map(([, count]) => count),
+                        backgroundColor: 'rgba(102, 126, 234, 0.7)',
+                        borderColor: 'rgba(102, 126, 234, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        title: {
+                            display: true,
+                            text: 'Top 15 Townships by Stop Count'
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: { display: true, text: 'Number of Stops' }
+                        }
+                    }
+                }
+            });
+        }
+
+        function createRoadChart() {
+            const roadCounts = {};
+            stopsData.forEach(stop => {
+                const road = stop.road_en || 'Unknown';
+                roadCounts[road] = (roadCounts[road] || 0) + 1;
+            });
+
+            const sorted = Object.entries(roadCounts)
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, 10);
+
+            new Chart(document.getElementById('roadChart'), {
+                type: 'horizontalBar',
+                data: {
+                    labels: sorted.map(([name]) => name),
+                    datasets: [{
+                        label: 'Number of Stops',
+                        data: sorted.map(([, count]) => count),
+                        backgroundColor: 'rgba(72, 187, 120, 0.7)',
+                        borderColor: 'rgba(72, 187, 120, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        title: {
+                            display: true,
+                            text: 'Top 10 Roads by Stop Count'
+                        }
+                    },
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                            title: { display: true, text: 'Number of Stops' }
+                        }
+                    }
+                }
+            });
+        }
+
+        function createOperatorChart() {
+            const operatorCounts = {};
+            routesData.forEach(route => {
+                const operator = route.agency_id || 'Unknown';
+                operatorCounts[operator] = (operatorCounts[operator] || 0) + 1;
+            });
+
+            const sorted = Object.entries(operatorCounts)
+                .sort((a, b) => b[1] - a[1]);
+
+            new Chart(document.getElementById('operatorChart'), {
+                type: 'doughnut',
+                data: {
+                    labels: sorted.map(([name]) => name),
+                    datasets: [{
+                        data: sorted.map(([, count]) => count),
+                        backgroundColor: [
+                            '#667eea', '#f56565', '#48bb78', '#ed8936', '#9f7aea',
+                            '#38b2ac', '#ecc94b', '#ed64a6', '#4299e1', '#9ae6b4'
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Route Distribution by Operator'
+                        },
+                        legend: {
+                            position: 'right'
+                        }
+                    }
+                }
+            });
+        }
+
+        function createRouteLengthChart() {
+            const stopCounts = routesData
+                .map(r => r.stops?.length || 0)
+                .filter(c => c > 0);
+
+            // Create histogram bins
+            const bins = [0, 25, 50, 75, 100, 125, 150, 175, 200, 300];
+            const histogram = new Array(bins.length - 1).fill(0);
+
+            stopCounts.forEach(count => {
+                for (let i = 0; i < bins.length - 1; i++) {
+                    if (count >= bins[i] && count < bins[i + 1]) {
+                        histogram[i]++;
+                        break;
+                    }
+                }
+            });
+
+            const labels = bins.slice(0, -1).map((bin, i) =>
+                `${bin}-${bins[i + 1]} stops`
+            );
+
+            new Chart(document.getElementById('routeLengthChart'), {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Number of Routes',
+                        data: histogram,
+                        backgroundColor: 'rgba(237, 100, 166, 0.7)',
+                        borderColor: 'rgba(237, 100, 166, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        title: {
+                            display: true,
+                            text: 'Distribution of Route Lengths'
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: { display: true, text: 'Number of Routes' }
+                        },
+                        x: {
+                            title: { display: true, text: 'Route Length (stops)' }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Load data on page load
+        loadData();
+    </script>
+</body>
+</html>

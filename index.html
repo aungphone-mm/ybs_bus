@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YBS Data Analysis Hub</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+        .container {
+            max-width: 1200px;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 3rem 2rem;
+            text-align: center;
+        }
+        .header h1 {
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+        }
+        .header p {
+            font-size: 1.3rem;
+            opacity: 0.9;
+        }
+        .content {
+            padding: 3rem;
+        }
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        .card {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            text-align: center;
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+        }
+        .card-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+        .card h2 {
+            color: #667eea;
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+        .card p {
+            color: #666;
+            line-height: 1.6;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+        .stat-box {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #667eea;
+        }
+        .stat-label {
+            color: #666;
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .section {
+            margin: 3rem 0;
+        }
+        .section h3 {
+            color: #333;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #667eea;
+        }
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+        .feature {
+            padding: 1.5rem;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+        .feature h4 {
+            color: #667eea;
+            margin-bottom: 0.5rem;
+        }
+        .feature p {
+            color: #666;
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+        .footer {
+            background: #f8f9fa;
+            padding: 2rem;
+            text-align: center;
+            color: #666;
+            border-top: 1px solid #eee;
+        }
+        .badge {
+            display: inline-block;
+            background: #48bb78;
+            color: white;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-top: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚌 YBS Data Analysis Hub</h1>
+            <p>Complete Geographic Distribution & Route Analysis</p>
+        </div>
+
+        <div class="content">
+            <div class="stats-grid">
+                <div class="stat-box">
+                    <div class="stat-value">2,093</div>
+                    <div class="stat-label">Bus Stops</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value">125</div>
+                    <div class="stat-label">Route Variants</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value">44</div>
+                    <div class="stat-label">Townships</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value">11</div>
+                    <div class="stat-label">Operators</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value">99.4%</div>
+                    <div class="stat-label">Coverage</div>
+                </div>
+            </div>
+
+            <h3 style="text-align: center; color: #333; margin: 3rem 0 2rem 0; font-size: 1.8rem;">
+                Choose Your View
+            </h3>
+
+            <div class="cards">
+                <a href="journey-planner.html" class="card" style="background: linear-gradient(135deg, #e6f7ed 0%, #c3e6cb 100%);">
+                    <div class="card-icon">🗺️</div>
+                    <h2>Journey Planner</h2>
+                    <p>Find the best bus routes from origin to destination. Supports multi-transfer journeys with detailed step-by-step directions.</p>
+                    <span class="badge" style="background: #48bb78;">NEW!</span>
+                </a>
+
+                <a href="route-map.html" class="card">
+                    <div class="card-icon">🚍</div>
+                    <h2>Route Map Viewer</h2>
+                    <p>View individual bus route lines with start/end points. Search for any route (e.g., Route 53) and see the complete path on the map.</p>
+                    <span class="badge" style="background: #667eea;">ENHANCED</span>
+                </a>
+
+                <a href="visualize-data.html" class="card">
+                    <div class="card-icon">🗺️</div>
+                    <h2>Interactive Dashboard</h2>
+                    <p>Explore an interactive map with all 2,093 bus stops. View route paths, click markers for details, and analyze data with live charts.</p>
+                    <span class="badge">RECOMMENDED</span>
+                </a>
+
+                <a href="gallery.html" class="card">
+                    <div class="card-icon">📊</div>
+                    <h2>Visualization Gallery</h2>
+                    <p>Browse 13 high-resolution charts including PNG and SVG formats. Perfect for reports and presentations.</p>
+                    <span class="badge">13 CHARTS</span>
+                </a>
+
+                <a href="summary-report.html" class="card">
+                    <div class="card-icon">📄</div>
+                    <h2>Summary Report</h2>
+                    <p>Quick overview with key statistics, top townships, roads, and operators. Clean, printable format.</p>
+                    <span class="badge">PRINTABLE</span>
+                </a>
+            </div>
+
+            <div class="section">
+                <h3>📈 What's Included</h3>
+                <div class="features">
+                    <div class="feature">
+                        <h4>Geographic Analysis</h4>
+                        <p>Complete coverage map, density heatmaps, and scatter plots showing all 2,093 stops across ~96km × 74km area</p>
+                    </div>
+                    <div class="feature">
+                        <h4>Township Distribution</h4>
+                        <p>Analysis of 44 townships with stop counts, percentages, and visual comparisons</p>
+                    </div>
+                    <div class="feature">
+                        <h4>Route Coverage</h4>
+                        <p>125 route variants analyzed with stop counts, operators, and geographic paths</p>
+                    </div>
+                    <div class="feature">
+                        <h4>Data Quality</h4>
+                        <p>Comprehensive quality checks showing 99.4% stop utilization and verified GPS coordinates</p>
+                    </div>
+                    <div class="feature">
+                        <h4>Operator Analysis</h4>
+                        <p>Market share breakdown across 11 operators with visual pie and bar charts</p>
+                    </div>
+                    <div class="feature">
+                        <h4>Infrastructure Stats</h4>
+                        <p>152 unique roads analyzed with stop distribution and major corridor identification</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h3>🎯 Key Findings</h3>
+                <div style="background: #fff3cd; padding: 1.5rem; border-radius: 8px; margin-top: 1rem;">
+                    <ul style="line-height: 2; color: #333; padding-left: 1.5rem;">
+                        <li><strong>Most Served Township:</strong> Thanlyin with 170 stops (8.1%)</li>
+                        <li><strong>Busiest Road:</strong> Yangon-Pyay Main Road with 152 stops</li>
+                        <li><strong>Dominant Operator:</strong> YRTA operating 64 routes (51.2%)</li>
+                        <li><strong>Average Route:</strong> 104 stops per route</li>
+                        <li><strong>Longest Route:</strong> Route 90 with 281 stops</li>
+                        <li><strong>Coverage Efficiency:</strong> 99.4% of stops actively used in routes</li>
+                        <li><strong>Data Quality:</strong> GOOD - Only 8 minor issues found</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="section">
+                <h3>📚 Documentation</h3>
+                <p style="color: #666; line-height: 1.8;">
+                    For detailed technical documentation, see <code>VISUALIZATION_GUIDE.md</code> in the project root.<br>
+                    For data analysis scripts, check <code>analyze-data.js</code> and <code>analyze-duplicates.js</code>.
+                </p>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p><strong>YBS Guide V3</strong> • Data Analysis & Visualizations</p>
+            <p style="margin-top: 0.5rem;">Generated: January 19, 2026</p>
+            <p style="margin-top: 0.5rem;">Yangon Bus Service Geographic Distribution Analysis</p>
+        </div>
+    </div>
+</body>
+</html>

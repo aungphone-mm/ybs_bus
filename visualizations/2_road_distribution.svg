@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1200" height="800" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="barGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#667eea;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#764ba2;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="800" fill="#f8f9fa"/>
+
+  <!-- Title -->
+  <text x="600" y="40" font-family="Arial, sans-serif" font-size="24" font-weight="bold" text-anchor="middle" fill="#333">Top 15 Roads by Stop Count</text>
+
+  <!-- Chart area -->
+  <g transform="translate(250, 80)">
+    <rect x="0" y="0" width="900" height="31.333333333333336" fill="url(#barGradient)" opacity="0.8"/>
+
+    <!-- Label -->
+    <text x="-10" y="15.666666666666668" font-family="Arial, sans-serif" font-size="14" text-anchor="end" alignment-baseline="middle" fill="#333">Yangon-Pyay Main Road</text>
+
+    <!-- Value -->
+    <text x="910" y="15.666666666666668" font-family="Arial, sans-serif" font-size="14" font-weight="bold" alignment-baseline="middle" fill="#667eea">152</text>
+    <rect x="0" y="41.333333333333336" width="615.7894736842105" height="31.333333333333336" fill="url(#barGradient)" opacity="0.8"/>
+
+    <!-- Label -->
+    <text x="-10" y="57" font-family="Arial, sans-serif" font-size="14" text-anchor="end" alignment-baseline="middle" fill="#333">No. 1 Main Road</text>
+
+    <!-- Value -->
+    <text x="625.7894736842105" y="57" font-family="Arial, sans-serif" font-size="14" font-weight="bold" alignment-baseline="middle" fill="#667eea">104</text>
+    <rect x="0" y="82.66666666666667" width="568.421052631579" height="31.333333333333336" fill="url(#barGradient)" opacity="0.8"/>
+
+    <!-- Label -->
+    <text x="-10" y="98.33333333333334" font-family="Arial, sans-serif" font-size="14" text-anchor="end" alignment-baseline="middle" fill="#333">No. 6 Main Road</text>
+
+    <!-- Value -->
+    <text x="578.421052631579" y="98.33333333333334" font-family="Arial, sans-serif" font-size="14" font-weight="bold" alignment-baseline="middle" fill="#667eea">96</text>
+    <rect x="0" y="124" width="414.4736842105263" height="31.333333333333336" fill="url(#barGradient)" opacity="0.8"/>
+
+    <!-- Label -->
+    <text x="-10" y="139.66666666666666" font-family="Arial, sans-serif" font-size="14" text-anchor="end" alignment-baseline="middle" fill="#333">Bayint Naung Road</text>
+
+    <!-- Value -->
+    <text x="424.4736842105263" y="139.66666666666666" font-family="Arial, sans-serif" font-size="14" font-weight="bold" alignment-baseline="middle" fill="#667eea">70</text>
+    <rect x="0" y="165.33333333333334" width="402.63157894736844" height="31.333333333333336" fill="url(#barGradient)" opacity="0.8"/>
+
+    <!-- Label -->
+    <text x="-10" y="181" font-family="Arial, sans-serif" font-size="14" text-anchor="end" alignment-baseline="middle" fill="#333">Hlegu-Phaung Gyi Road</text>
+
+    <!-- Value -->
+    <text x="412.63157894736844" y="181" font-family="Arial, sans-serif" font-size="14" font-weight="bold" alignment-baseline="middle" fill="#667eea">68</text>
+    <rect x="0" y="206.66666666666669" width="349.34210526315786" height="31.333333333333336" fill="url(#barGradient)" opacity="0.8"/>
+
+    <!-- Label -->
+    <text x="-10" y="222.33333333333334" font-family="Arial, sans-serif" font-size="14" text-anchor="end" alignment-baseline="middle" fill="#333">Thanlyin-Kyauktan Road</text>
+
+    <!-- Value -->
+    <text x="359.34210526315786" y="222.33333333333334" font-family="Arial, sans-serif" font-size="14" font-weight="bold" alignment-baseline="middle" fill="#667eea">59</text>
+    <rect x="0" y="248" width="343.42105263157896" height="31.333333333333336" fill="url(#barGradient)" opacity="0.8"/>
+
+    <!-- Label -->
+    <text x="-10" y="263.6666666666667" font-family="Arial, sans-serif" font-size="14" text-anchor="end" alignment-baseline="middle" fill="#333">No. 2 Main Road</text>
+
+    <!-- Value -->
+    <text x="353.42105263157896" y="263.6666666666667" font-family="Arial, sans-serif" font-size="14" font-weight="bold" alignment-baseline="middle" fill="#667eea">58</text>
+    <rect x="0" y="289.33333333333337" width="331.57894736842104" height="31.333333333333336" fill="url(#barGradient)" opacity="0.8"/>
+
+    <!-- Label -->
+    <text x="-10" y="305.00000000000006" font-family="Arial, sans-serif" font-size="14" text-anchor="end" alignment-baseline="middle" fill="#333">Pyi Htaung Su Main Road</text>
+
+    <!-- Value -->
+    <text x="341.57894736842104" y="305.00000000000006" font-family="Arial, sans-serif" font-size="14" font-weight="bold" alignment-baseline="middle" fill="#667eea">56</text>
+    <rect x="0" y="330.6666666666667" width="313.81578947368416" height="31.333333333333336" fill="url(#barGradient)" opacity="0.8"/>
+
+    <!-- Label -->
+    <text x="-10" y="346.33333333333337" font-family="Arial, sans-serif" font-size="14" text-anchor="end" alignment-baseline="middle" fill="#333">Thanthumar Road</text>
+
+    <!-- Value -->
+    <text x="323.81578947368416" y="346.33333333333337" font-family="Arial, sans-serif" font-size="14" font-weight="bold" alignment-baseline="middle" fill="#667eea">53</text>
+    <rect x="0" y="372" width="260.5263157894737" height="31.333333333333336" fill="url(#barGradient)" opacity="0.8"/>
+
+    <!-- Label -->
+    <text x="-10" y="387.6666666666667" font-family="Arial, sans-serif" font-size="14" text-anchor="end" alignment-baseline="middle" fill="#333">Pyay Road</text>
+
+    <!-- Value -->
+    <text x="270.5263157894737" y="387.6666666666667" font-family="Arial, sans-serif" font-size="14" font-weight="bold" alignment-baseline="middle" fill="#667eea">44</text>
+    <rect x="0" y="413.33333333333337" width="242.76315789473685" height="31.333333333333336" fill="url(#barGradient)" opacity="0.8"/>
+
+    <!-- Label -->
+    <text x="-10" y="429.00000000000006" font-family="Arial, sans-serif" font-size="14" text-anchor="end" alignment-baseline="middle" fill="#333">No. 3 Main Road</text>
+
+    <!-- Value -->
+    <text x="252.76315789473685" y="429.00000000000006" font-family="Arial, sans-serif" font-size="14" font-weight="bold" alignment-baseline="middle" fill="#667eea">41</text>
+    <rect x="0" y="454.6666666666667" width="219.07894736842107" height="31.333333333333336" fill="url(#barGradient)" opacity="0.8"/>
+
+    <!-- Label -->
+    <text x="-10" y="470.33333333333337" font-family="Arial, sans-serif" font-size="14" text-anchor="end" alignment-baseline="middle" fill="#333">Thudhamar Road</text>
+
+    <!-- Value -->
+    <text x="229.07894736842107" y="470.33333333333337" font-family="Arial, sans-serif" font-size="14" font-weight="bold" alignment-baseline="middle" fill="#667eea">37</text>
+    <rect x="0" y="496" width="213.15789473684208" height="31.333333333333336" fill="url(#barGradient)" opacity="0.8"/>
+
+    <!-- Label -->
+    <text x="-10" y="511.6666666666667" font-family="Arial, sans-serif" font-size="14" text-anchor="end" alignment-baseline="middle" fill="#333">No. 4 Main Road</text>
+
+    <!-- Value -->
+    <text x="223.15789473684208" y="511.6666666666667" font-family="Arial, sans-serif" font-size="14" font-weight="bold" alignment-baseline="middle" fill="#667eea">36</text>
+    <rect x="0" y="537.3333333333334" width="195.39473684210526" height="31.333333333333336" fill="url(#barGradient)" opacity="0.8"/>
+
+    <!-- Label -->
+    <text x="-10" y="553" font-family="Arial, sans-serif" font-size="14" text-anchor="end" alignment-baseline="middle" fill="#333">Bo Hmu Ba Htoo Road</text>
+
+    <!-- Value -->
+    <text x="205.39473684210526" y="553" font-family="Arial, sans-serif" font-size="14" font-weight="bold" alignment-baseline="middle" fill="#667eea">33</text>
+    <rect x="0" y="578.6666666666667" width="189.4736842105263" height="31.333333333333336" fill="url(#barGradient)" opacity="0.8"/>
+
+    <!-- Label -->
+    <text x="-10" y="594.3333333333334" font-family="Arial, sans-serif" font-size="14" text-anchor="end" alignment-baseline="middle" fill="#333">Shwe Pyi Thar Bridge Road</text>
+
+    <!-- Value -->
+    <text x="199.4736842105263" y="594.3333333333334" font-family="Arial, sans-serif" font-size="14" font-weight="bold" alignment-baseline="middle" fill="#667eea">32</text>
+  </g>
+</svg>

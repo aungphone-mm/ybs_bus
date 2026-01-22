@@ -1,0 +1,882 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YBS Route Map - View Individual Bus Routes</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <!-- Journey Planning Modules -->
+    <script src="js/stopMatcher.js"></script>
+    <script src="js/routeIndex.js"></script>
+    <script src="js/pathfinder.js"></script>
+    <script src="js/autocomplete.js"></script>
+    <script src="js/journeyUI.js"></script>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f5f5;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .header h1 {
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+        }
+        .nav {
+            background: white;
+            padding: 0.5rem 1rem;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        .nav a {
+            padding: 0.5rem 1rem;
+            background: #667eea;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            font-size: 0.9rem;
+        }
+        .container {
+            display: flex;
+            height: calc(100vh - 140px);
+        }
+        .sidebar {
+            width: 350px;
+            background: white;
+            padding: 1.5rem;
+            overflow-y: auto;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+        }
+        .sidebar h2 {
+            color: #667eea;
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+        }
+        .search-box {
+            width: 100%;
+            padding: 0.8rem;
+            border: 2px solid #667eea;
+            border-radius: 6px;
+            font-size: 1rem;
+            margin-bottom: 1rem;
+        }
+        .route-list {
+            max-height: calc(100vh - 400px);
+            overflow-y: auto;
+        }
+        .route-item {
+            padding: 0.8rem;
+            margin-bottom: 0.5rem;
+            background: #f8f9fa;
+            border-left: 4px solid #667eea;
+            cursor: pointer;
+            transition: all 0.3s;
+            border-radius: 4px;
+        }
+        .route-item:hover {
+            background: #e9ecef;
+            transform: translateX(5px);
+        }
+        .route-item.active {
+            background: #667eea;
+            color: white;
+            font-weight: bold;
+        }
+        .route-number {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #667eea;
+        }
+        .route-item.active .route-number {
+            color: white;
+        }
+        .route-name {
+            font-size: 0.9rem;
+            color: #666;
+            margin-top: 0.3rem;
+        }
+        .route-item.active .route-name {
+            color: #f0f0f0;
+        }
+        .route-info {
+            background: #fff3cd;
+            padding: 1rem;
+            border-radius: 6px;
+            margin-top: 1rem;
+            display: none;
+        }
+        .route-info.active {
+            display: block;
+        }
+        .route-info h3 {
+            color: #856404;
+            margin-bottom: 0.5rem;
+        }
+        .route-info p {
+            margin: 0.3rem 0;
+            font-size: 0.9rem;
+            color: #856404;
+        }
+        #map {
+            flex: 1;
+            height: 100%;
+        }
+        .legend {
+            background: white;
+            padding: 1rem;
+            border-radius: 6px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+        .legend h4 {
+            margin-bottom: 0.5rem;
+            color: #333;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin: 0.5rem 0;
+            font-size: 0.9rem;
+        }
+        .legend-color {
+            width: 30px;
+            height: 4px;
+            margin-right: 0.5rem;
+        }
+        .legend-marker {
+            width: 20px;
+            height: 20px;
+            margin-right: 0.5rem;
+            border-radius: 50%;
+            display: inline-block;
+        }
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            color: #666;
+        }
+        .clear-btn {
+            width: 100%;
+            padding: 0.8rem;
+            background: #f56565;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1rem;
+            margin-top: 1rem;
+        }
+        .clear-btn:hover {
+            background: #e53e3e;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🚌 YBS Route Map Viewer</h1>
+        <p>View individual bus routes with start and end points</p>
+    </div>
+
+    <div class="nav">
+        <a href="index.html">Home</a>
+        <a href="visualize-data.html">Dashboard</a>
+        <a href="route-map.html">Route Map</a>
+        <a href="journey-planner.html">Journey Planner</a>
+        <a href="gallery.html">Gallery</a>
+        <a href="summary-report.html">Report</a>
+    </div>
+
+    <div class="container">
+        <div class="sidebar">
+            <h2>Search Routes</h2>
+            <input type="text" class="search-box" id="searchBox" placeholder="Search route number (e.g., 53, 1, 37)...">
+
+            <div class="route-info" id="routeInfo">
+                <h3 id="infoTitle">Route Information</h3>
+                <p><strong>Route:</strong> <span id="infoRoute"></span></p>
+                <p><strong>Name:</strong> <span id="infoName"></span></p>
+                <p><strong>Operator:</strong> <span id="infoOperator"></span></p>
+                <p><strong>Total Stops:</strong> <span id="infoStops"></span></p>
+                <p><strong>Distance:</strong> <span id="infoDistance"></span></p>
+            </div>
+
+            <button class="clear-btn" onclick="clearRoute()">Clear Route</button>
+
+            <!-- Journey Planning Section -->
+            <div style="margin-top: 2rem; padding-top: 2rem; border-top: 2px solid #e9ecef;">
+                <h2 style="color: #48bb78;">🗺️ Plan Journey</h2>
+                <p style="font-size: 0.85em; color: #666; margin-bottom: 1rem;">
+                    Find routes from origin to destination with transfers
+                </p>
+
+                <div style="margin-bottom: 1rem; position: relative;">
+                    <label style="display: block; margin-bottom: 0.3rem; font-weight: 600; color: #333; font-size: 0.9em;">
+                        🟢 Origin
+                    </label>
+                    <input type="text" id="originInput" class="search-box"
+                           placeholder="Search or click a stop on map..." style="margin-bottom: 0;">
+                </div>
+
+                <div style="margin-bottom: 1rem; position: relative;">
+                    <label style="display: block; margin-bottom: 0.3rem; font-weight: 600; color: #333; font-size: 0.9em;">
+                        🔴 Destination
+                    </label>
+                    <input type="text" id="destinationInput" class="search-box"
+                           placeholder="Search or click a stop on map..." style="margin-bottom: 0;">
+                </div>
+
+                <button id="findRoutesBtn" style="
+                    width: 100%;
+                    padding: 0.8rem;
+                    background: #48bb78;
+                    color: white;
+                    border: none;
+                    border-radius: 6px;
+                    cursor: pointer;
+                    font-size: 1rem;
+                    font-weight: 600;
+                    margin-bottom: 1rem;
+                    transition: background 0.2s;
+                " onmouseover="this.style.background='#38a169'"
+                   onmouseout="this.style.background='#48bb78'">
+                    🔍 Find Routes
+                </button>
+
+                <button id="clearJourneyBtn" style="
+                    width: 100%;
+                    padding: 0.6rem;
+                    background: white;
+                    color: #666;
+                    border: 2px solid #e9ecef;
+                    border-radius: 6px;
+                    cursor: pointer;
+                    font-size: 0.9rem;
+                    transition: all 0.2s;
+                " onmouseover="this.style.borderColor='#48bb78'; this.style.color='#48bb78'"
+                   onmouseout="this.style.borderColor='#e9ecef'; this.style.color='#666'">
+                    Clear Journey
+                </button>
+
+                <div id="journeyResults" style="margin-top: 1rem;"></div>
+            </div>
+
+            <h2 style="margin-top: 2rem;">All Routes</h2>
+            <div class="route-list" id="routeList">
+                <div class="loading">Loading routes...</div>
+            </div>
+        </div>
+
+        <div id="map"></div>
+    </div>
+
+    <script>
+        let map;
+        let currentRouteLayer = null;
+        let currentStopMarkers = [];
+        let routesData = [];
+        let stopsData = [];
+        let routesIndex = {};
+
+        // Initialize map
+        function initMap() {
+            map = L.map('map').setView([16.8, 96.15], 12);
+
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap contributors',
+                maxZoom: 18
+            }).addTo(map);
+
+            // Add legend
+            const legend = L.control({ position: 'bottomright' });
+            legend.onAdd = function() {
+                const div = L.DomUtil.create('div', 'legend');
+                div.innerHTML = `
+                    <h4>Legend</h4>
+                    <div class="legend-item">
+                        <span class="legend-marker" style="background: #48bb78;"></span>
+                        <span>Start Point</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-marker" style="background: #f56565;"></span>
+                        <span>End Point</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-marker" style="background: #667eea;"></span>
+                        <span>Bus Stop</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-color" style="background: #667eea;"></span>
+                        <span>Route Path</span>
+                    </div>
+                `;
+                return div;
+            };
+            legend.addTo(map);
+        }
+
+        // Load data
+        async function loadData() {
+            try {
+                // Load stops
+                const stopsResponse = await fetch('data/stops.tsv');
+                const stopsText = await stopsResponse.text();
+                const stopsLines = stopsText.split('\n').filter(line => line.trim());
+
+                stopsData = {};
+                stopsLines.slice(1).forEach(line => {
+                    const values = line.split('\t');
+                    stopsData[values[0]] = {
+                        id: values[0],
+                        lat: parseFloat(values[1]),
+                        lng: parseFloat(values[2]),
+                        name_en: values[3],
+                        name_mm: values[4],
+                        road_en: values[5],
+                        township_en: values[7]
+                    };
+                });
+
+                // Load routes index
+                const indexResponse = await fetch('data/routes-index.json');
+                routesIndex = await indexResponse.json();
+
+                // Load all routes
+                for (const [routeNum, files] of Object.entries(routesIndex)) {
+                    for (const file of files) {
+                        try {
+                            const response = await fetch(`data/routes/${file}`);
+                            const route = await response.json();
+                            routesData.push({
+                                ...route,
+                                route_num: routeNum,
+                                file: file
+                            });
+                        } catch (e) {
+                            console.warn(`Could not load ${file}`);
+                        }
+                    }
+                }
+
+                // Sort routes by number
+                routesData.sort((a, b) => {
+                    const aNum = parseInt(a.route_num) || 999;
+                    const bNum = parseInt(b.route_num) || 999;
+                    return aNum - bNum;
+                });
+
+                displayRouteList();
+            } catch (error) {
+                console.error('Error loading data:', error);
+                document.getElementById('routeList').innerHTML =
+                    '<div class="loading" style="color: red;">Error loading data</div>';
+            }
+        }
+
+        // Display route list
+        function displayRouteList(filter = '') {
+            const listDiv = document.getElementById('routeList');
+
+            const filtered = routesData.filter(route =>
+                route.route_num.toLowerCase().includes(filter.toLowerCase()) ||
+                route.name.toLowerCase().includes(filter.toLowerCase())
+            );
+
+            if (filtered.length === 0) {
+                listDiv.innerHTML = '<div class="loading">No routes found</div>';
+                return;
+            }
+
+            listDiv.innerHTML = filtered.map(route => `
+                <div class="route-item" onclick="showRoute('${route.route_num}', '${route.file}')">
+                    <div class="route-number">Route ${route.route_num}</div>
+                    <div class="route-name">${route.name}</div>
+                </div>
+            `).join('');
+        }
+
+        // Show route on map
+        function showRoute(routeNum, file) {
+            // Clear previous route
+            clearRoute();
+
+            // Find route data
+            const route = routesData.find(r => r.route_num === routeNum && r.file === file);
+            if (!route) return;
+
+            // Highlight selected route in list
+            document.querySelectorAll('.route-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            event.target.closest('.route-item').classList.add('active');
+
+            // Draw route line
+            if (route.shape && route.shape.geometry && route.shape.geometry.coordinates) {
+                const coords = route.shape.geometry.coordinates.map(c => [c[1], c[0]]);
+
+                const color = route.color ? `#${route.color}` : '#667eea';
+
+                // Draw white outline for better visibility
+                const outline = L.polyline(coords, {
+                    color: 'white',
+                    weight: 10,
+                    opacity: 0.8
+                }).addTo(map);
+
+                // Draw colored route line on top
+                currentRouteLayer = L.polyline(coords, {
+                    color: color,
+                    weight: 6,
+                    opacity: 1
+                }).addTo(map);
+
+                // Store outline to remove later
+                if (!window.currentRouteOutline) window.currentRouteOutline = null;
+                if (window.currentRouteOutline) map.removeLayer(window.currentRouteOutline);
+                window.currentRouteOutline = outline;
+
+                // Add start marker (green, larger)
+                const startCoord = coords[0];
+                const startMarker = L.circleMarker(startCoord, {
+                    radius: 12,
+                    fillColor: '#48bb78',
+                    color: 'white',
+                    weight: 3,
+                    opacity: 1,
+                    fillOpacity: 1
+                }).addTo(map);
+
+                startMarker.bindPopup(`
+                    <b>🟢 START</b><br>
+                    Route ${routeNum}<br>
+                    ${route.name}
+                `);
+                currentStopMarkers.push(startMarker);
+
+                // Add end marker (red, larger)
+                const endCoord = coords[coords.length - 1];
+                const endMarker = L.circleMarker(endCoord, {
+                    radius: 12,
+                    fillColor: '#f56565',
+                    color: 'white',
+                    weight: 3,
+                    opacity: 1,
+                    fillOpacity: 1
+                }).addTo(map);
+
+                endMarker.bindPopup(`
+                    <b>END</b><br>
+                    Route ${routeNum}<br>
+                    ${route.name}
+                `);
+                currentStopMarkers.push(endMarker);
+
+                // Add stop markers
+                if (route.stops && route.stops.length > 0) {
+                    route.stops.forEach((stopId, index) => {
+                        const stop = stopsData[stopId];
+                        if (stop && !isNaN(stop.lat) && !isNaN(stop.lng)) {
+                            const marker = L.circleMarker([stop.lat, stop.lng], {
+                                radius: 5,
+                                fillColor: '#667eea',
+                                color: 'white',
+                                weight: 1,
+                                opacity: 1,
+                                fillOpacity: 0.8
+                            }).addTo(map);
+
+                            marker.bindPopup(`
+                                <b>Stop ${index + 1}/${route.stops.length}</b><br>
+                                ${stop.name_en}<br>
+                                <small>${stop.name_mm}</small><br>
+                                <small>Road: ${stop.road_en}</small><br>
+                                <small>Township: ${stop.township_en}</small>
+                            `);
+
+                            currentStopMarkers.push(marker);
+                        }
+                    });
+                }
+
+                // Fit map to route bounds
+                map.fitBounds(currentRouteLayer.getBounds(), {
+                    padding: [50, 50]
+                });
+            }
+
+            // Calculate distance
+            let distance = 0;
+            if (route.shape && route.shape.geometry && route.shape.geometry.coordinates) {
+                const coords = route.shape.geometry.coordinates;
+                for (let i = 1; i < coords.length; i++) {
+                    distance += calculateDistance(
+                        coords[i-1][1], coords[i-1][0],
+                        coords[i][1], coords[i][0]
+                    );
+                }
+            }
+
+            // Show route info
+            document.getElementById('routeInfo').classList.add('active');
+            document.getElementById('infoRoute').textContent = routeNum;
+            document.getElementById('infoName').textContent = route.name;
+            document.getElementById('infoOperator').textContent = route.agency_id || 'Unknown';
+            document.getElementById('infoStops').textContent = route.stops?.length || 0;
+            document.getElementById('infoDistance').textContent = `~${distance.toFixed(1)} km`;
+        }
+
+        // Calculate distance between two points (Haversine formula)
+        function calculateDistance(lat1, lon1, lat2, lon2) {
+            const R = 6371; // Earth's radius in km
+            const dLat = (lat2 - lat1) * Math.PI / 180;
+            const dLon = (lon2 - lon1) * Math.PI / 180;
+            const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                     Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+                     Math.sin(dLon/2) * Math.sin(dLon/2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+            return R * c;
+        }
+
+        // Clear route
+        function clearRoute() {
+            if (currentRouteLayer) {
+                map.removeLayer(currentRouteLayer);
+                currentRouteLayer = null;
+            }
+            currentStopMarkers.forEach(marker => map.removeLayer(marker));
+            currentStopMarkers = [];
+
+            document.querySelectorAll('.route-item').forEach(item => {
+                item.classList.remove('active');
+            });
+
+            document.getElementById('routeInfo').classList.remove('active');
+
+            // Reset map view
+            map.setView([16.8, 96.15], 12);
+        }
+
+        // Search functionality
+        document.getElementById('searchBox').addEventListener('input', (e) => {
+            displayRouteList(e.target.value);
+        });
+
+        // === Journey Planning Functionality ===
+        let pathfinder;
+        let journeyUI;
+        let originAutocomplete;
+        let destinationAutocomplete;
+        let selectedOrigin = null;
+        let selectedDestination = null;
+        let journeyLayers = [];
+
+        // Initialize journey planning system
+        async function initJourneyPlanner() {
+            console.log('[JourneyPlanner] Initializing...');
+
+            try {
+                // Initialize stopMatcher with stops data
+                stopMatcher.initialize(stopsData);
+
+                // Initialize routeIndex with routes data
+                await routeIndex.initialize(routesData);
+
+                // Create pathfinder
+                pathfinder = new PathFinder(routeIndex, stopMatcher);
+
+                // Initialize autocomplete components
+                originAutocomplete = new Autocomplete(
+                    document.getElementById('originInput'),
+                    stopMatcher,
+                    {
+                        placeholder: 'Search origin stop...',
+                        onSelect: (stop) => {
+                            selectedOrigin = stop;
+                            console.log('[JourneyPlanner] Origin selected:', stop.name_en);
+                            highlightStopOnMap(stop, 'origin');
+                        }
+                    }
+                );
+
+                destinationAutocomplete = new Autocomplete(
+                    document.getElementById('destinationInput'),
+                    stopMatcher,
+                    {
+                        placeholder: 'Search destination stop...',
+                        onSelect: (stop) => {
+                            selectedDestination = stop;
+                            console.log('[JourneyPlanner] Destination selected:', stop.name_en);
+                            highlightStopOnMap(stop, 'destination');
+                        }
+                    }
+                );
+
+                // Initialize journey UI
+                journeyUI = new JourneyUI(
+                    document.getElementById('journeyResults'),
+                    {
+                        onShowOnMap: showJourneyOnMap,
+                        showActions: true,
+                        expandFirst: true
+                    }
+                );
+
+                // Attach event listeners
+                document.getElementById('findRoutesBtn').addEventListener('click', findJourneyRoutes);
+                document.getElementById('clearJourneyBtn').addEventListener('click', clearJourney);
+
+                console.log('[JourneyPlanner] Initialized successfully');
+            } catch (error) {
+                console.error('[JourneyPlanner] Initialization error:', error);
+            }
+        }
+
+        // Find journey routes
+        function findJourneyRoutes() {
+            if (!selectedOrigin || !selectedDestination) {
+                alert('Please select both origin and destination stops');
+                return;
+            }
+
+            if (selectedOrigin.id === selectedDestination.id) {
+                alert('Origin and destination cannot be the same');
+                return;
+            }
+
+            console.log('[JourneyPlanner] Finding paths from', selectedOrigin.name_en, 'to', selectedDestination.name_en);
+
+            // Clear previous journey visualization
+            clearJourneyLayers();
+
+            // Find paths
+            const paths = pathfinder.findAllPaths(selectedOrigin.id, selectedDestination.id, {
+                maxTransfers: 2,
+                maxPaths: 10,
+                maxDistance: 50,
+                timeout: 5000
+            });
+
+            console.log(`[JourneyPlanner] Found ${paths.length} paths`);
+
+            if (paths.length === 0) {
+                journeyUI.showNoResults();
+                alert('No routes found between these stops. Try selecting stops closer together or with better connections.');
+                return;
+            }
+
+            // Display results
+            journeyUI.renderPaths(paths);
+
+            // Auto-show first path on map
+            if (paths.length > 0) {
+                showJourneyOnMap(paths[0], 0);
+            }
+        }
+
+        // Show journey on map
+        function showJourneyOnMap(path, index) {
+            console.log('[JourneyPlanner] Showing path', index, 'on map');
+
+            // Clear previous journey layers
+            clearJourneyLayers();
+
+            // Clear route viewer (if active)
+            clearRoute();
+
+            // Draw each leg
+            path.legs.forEach((leg, legIndex) => {
+                // Get route data to draw the segment
+                const route = routeIndex.getRouteData(leg.route);
+                if (!route || !route.shape || !route.shape.geometry) return;
+
+                // Find the segment of the route between board and alight stops
+                const boardIdx = route.stops.findIndex(id => String(id) === String(leg.boardStop.id));
+                const alightIdx = route.stops.findIndex(id => String(id) === String(leg.alightStop.id));
+
+                if (boardIdx === -1 || alightIdx === -1) return;
+
+                // Extract coordinates for this segment
+                // Approximate: use a portion of the full route coordinates
+                const coords = route.shape.geometry.coordinates;
+                const segmentRatio = (alightIdx - boardIdx) / route.stops.length;
+                const startCoordIdx = Math.floor(boardIdx / route.stops.length * coords.length);
+                const endCoordIdx = Math.min(coords.length - 1, Math.floor(alightIdx / route.stops.length * coords.length));
+
+                const segmentCoords = coords.slice(startCoordIdx, endCoordIdx + 1).map(c => [c[1], c[0]]);
+
+                // Draw route segment with white outline for better visibility
+                const routeColor = leg.routeColor || '#667eea';
+
+                // Draw white outline
+                const outline = L.polyline(segmentCoords, {
+                    color: 'white',
+                    weight: 10,
+                    opacity: 0.8,
+                    dashArray: legIndex > 0 ? '10, 10' : null
+                }).addTo(map);
+                journeyLayers.push(outline);
+
+                // Draw colored route line
+                const routeLine = L.polyline(segmentCoords, {
+                    color: routeColor,
+                    weight: 6,
+                    opacity: 1,
+                    dashArray: legIndex > 0 ? '10, 10' : null  // Dashed for transfer legs
+                }).addTo(map);
+
+                journeyLayers.push(routeLine);
+
+                // Add route label
+                if (segmentCoords.length > 0) {
+                    const midpoint = segmentCoords[Math.floor(segmentCoords.length / 2)];
+                    const label = L.marker(midpoint, {
+                        icon: L.divIcon({
+                            className: 'route-label',
+                            html: `<div style="
+                                background: ${leg.routeColor || '#667eea'};
+                                color: white;
+                                padding: 4px 8px;
+                                border-radius: 4px;
+                                font-weight: bold;
+                                font-size: 12px;
+                                box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+                                white-space: nowrap;
+                            ">🚌 ${leg.route}</div>`,
+                            iconSize: [50, 20],
+                            iconAnchor: [25, 10]
+                        })
+                    }).addTo(map);
+
+                    journeyLayers.push(label);
+                }
+
+                // Add board stop marker (larger for better visibility)
+                const boardMarker = L.circleMarker([leg.boardStop.lat, leg.boardStop.lng], {
+                    radius: 10,
+                    fillColor: legIndex === 0 ? '#48bb78' : '#ffd93d',
+                    color: 'white',
+                    weight: 3,
+                    opacity: 1,
+                    fillOpacity: 1
+                }).addTo(map);
+
+                boardMarker.bindPopup(`
+                    <b>${legIndex === 0 ? '🟢 ORIGIN' : '🔄 TRANSFER'}</b><br>
+                    ${leg.boardStop.name_en}<br>
+                    <small>${leg.boardStop.name_mm || ''}</small><br>
+                    <small>Board Route ${leg.route}</small>
+                `);
+
+                journeyLayers.push(boardMarker);
+
+                // Add alight stop marker (last leg only - destination)
+                if (legIndex === path.legs.length - 1) {
+                    const alightMarker = L.circleMarker([leg.alightStop.lat, leg.alightStop.lng], {
+                        radius: 10,
+                        fillColor: '#f56565',
+                        color: 'white',
+                        weight: 3,
+                        opacity: 1,
+                        fillOpacity: 1
+                    }).addTo(map);
+
+                    alightMarker.bindPopup(`
+                        <b>🔴 DESTINATION</b><br>
+                        ${leg.alightStop.name_en}<br>
+                        <small>${leg.alightStop.name_mm || ''}</small><br>
+                        <small>Alight from Route ${leg.route}</small>
+                    `);
+
+                    journeyLayers.push(alightMarker);
+                }
+            });
+
+            // Fit map to show all journey layers
+            if (journeyLayers.length > 0) {
+                const group = L.featureGroup(journeyLayers.filter(layer => layer.getBounds));
+                if (group.getBounds().isValid()) {
+                    map.fitBounds(group.getBounds(), { padding: [50, 50] });
+                }
+            }
+        }
+
+        // Highlight stop on map
+        function highlightStopOnMap(stop, type) {
+            // Remove previous highlight of this type
+            journeyLayers = journeyLayers.filter(layer => {
+                if (layer.options && layer.options.stopType === type) {
+                    map.removeLayer(layer);
+                    return false;
+                }
+                return true;
+            });
+
+            // Add new highlight marker
+            const color = type === 'origin' ? '#48bb78' : '#f56565';
+            const icon = type === 'origin' ? '🟢' : '🔴';
+
+            const marker = L.circleMarker([stop.lat, stop.lng], {
+                radius: 10,
+                fillColor: color,
+                color: 'white',
+                weight: 3,
+                opacity: 1,
+                fillOpacity: 0.8,
+                stopType: type
+            }).addTo(map);
+
+            marker.bindPopup(`
+                <b>${icon} ${type === 'origin' ? 'ORIGIN' : 'DESTINATION'}</b><br>
+                ${stop.name_en}<br>
+                <small>${stop.name_mm || ''}</small><br>
+                <small>${stop.road_en || ''}</small>
+            `).openPopup();
+
+            journeyLayers.push(marker);
+
+            // Center map on stop
+            map.setView([stop.lat, stop.lng], 14);
+        }
+
+        // Clear journey visualization
+        function clearJourneyLayers() {
+            journeyLayers.forEach(layer => {
+                if (map.hasLayer(layer)) {
+                    map.removeLayer(layer);
+                }
+            });
+            journeyLayers = [];
+        }
+
+        // Clear journey planning
+        function clearJourney() {
+            selectedOrigin = null;
+            selectedDestination = null;
+            document.getElementById('originInput').value = '';
+            document.getElementById('destinationInput').value = '';
+            journeyUI.clear();
+            clearJourneyLayers();
+            map.setView([16.8, 96.15], 12);
+        }
+
+        // Initialize
+        initMap();
+        loadData().then(() => {
+            // Initialize journey planner after data loads
+            initJourneyPlanner();
+        });
+    </script>
+</body>
+</html>
